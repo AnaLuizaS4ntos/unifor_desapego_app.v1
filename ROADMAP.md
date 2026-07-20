@@ -10,6 +10,21 @@
 [] instalar o microframework (pip install flask flask-cors) e depois (python.exe -m pip install --upgrade pip)
 []config permissão do venv no windowns
 
+
+## como criar pastas pelo terminal
+-mkdir nomedapasta
+-cd nomedapasta
+-echo > nomedoarquivo.py/html/js, etc
+
+------usando Vite para organizar as pastas do jeito que montei nesse arquivo------
+usei os comandos:
+cd ..
+cd frontend
+npm create vite@latest . -- --template react
+npm install
+
+
+
 1. backend
         -criar pastas
         -config flask
