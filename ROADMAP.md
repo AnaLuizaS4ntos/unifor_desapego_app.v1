@@ -7,6 +7,7 @@
 -- criar um marketplace de desapego --
 
 []config pasta .venv
+[] instalar o microframework (pip install flask flask-cors) e depois (python.exe -m pip install --upgrade pip)
 []config permissão do venv no windowns
 
 1. backend
