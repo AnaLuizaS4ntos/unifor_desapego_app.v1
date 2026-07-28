@@ -1,11 +1,30 @@
-import { useState } from 'react'
+import { useState, useEffect} from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from './assets/vite.svg'
 import heroImg from './assets/hero.png'
 import './App.css'
+import axios from 'axios'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [count, setCount] = useState(0);
+  const [array, setArray] = useState([]);
+
+ useEffect(() => {
+  const fetchAPI = async () => {
+    try {
+      const response = await axios.get("http://127.0.0.1:5000/api/dados");
+      if (Array.isArray(response.data.dados)) {
+        setArray(response.data.dados);
+      } else if (response.data.mensagem) {
+        setArray([response.data.mensagem]);
+      }
+    } catch (error) {
+      console.error("Erro ao carregar dados do backend:", error);
+    }
+  };
+
+  fetchAPI();
+}, []);
 
   return (
     <>
@@ -18,7 +37,13 @@ function App() {
         <div>
           <h1>Get started</h1>
           <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
+            {array.length > 0 ? (
+              array.map((dados, index) => (
+                <span key={index}>{dados} </span>
+              ))
+            ) : (
+              <span>Carregando dados da API...</span>
+            )}
           </p>
         </div>
         <button

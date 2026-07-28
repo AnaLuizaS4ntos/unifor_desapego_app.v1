@@ -23,30 +23,66 @@ cd frontend
 npm create vite@latest . -- --template react
 npm install
 
+-------
+intalando o axios para o HTTP se conecte com o servidor de APIs externas no react
+
+cd frontend 
+npm install axios
+npm run dev
+
+----------
 
 
-1. backend
+**1. backend**
         -criar pastas
         -config flask
         -config JSON
 
     **minha estrutura de pastas para o backend**
-        -app/
-            -api
-                -
-                 
+        backend/
+app/
+    __init__.py        # Inicializa a app Flask e carrega extensões
+        routes/            # Em vez de apenas api/
+            auth.py        # Blueprint de Autenticação
+            products.py    # Blueprint de Produtos
+            categories.py  # Blueprint de Categorias
+        models/            # Modelos do banco (ex: SQLAlchemy)
+            user.py
+            product.py
+        services/          # Regras de negócio ou lógica de banco se necessário
+    tests/
+    config.py              # Configurações de dev, prod e banco de dados
+    extensions.py          # Instâncias de db, cors, jwt, etc.
+    requirements.txt       # Cuidado com o typo no arquivo ("requeriments")
+    run.py                 # Arquivo de entrada para rodar a aplicação
 
-        -models/
-            -__init__.py
-            -usuario.py
+--
+comando pra ativar o .venv dentro do backend:
 
-        -tests/
-
-        -extensions.py
-        -requeriments.txt
+cd backend
+.\.venv\Scripts\Activate.ps1
 
 
-2. frontend
+---
+criar as rotas para o marketplace
+
+-auth
+    autenticação de login e cadastro(post)
+
+
+-products
+    anuncio dos produtos disponiveis 
+    -lista com todos os produtos cadastrados (get)
+    -descrição dos produtos id(get)
+    -criar novo anuncio de produto(post)
+    -editar o anuncio que vai postar(put)
+    -CRUD do produto anunciado(delete)
+
+-categories
+    categoria do produto que vai ser anunciado no unifor desapega(get)
+
+
+**2. frontend**
         -criar pastas
         -config react
 
@@ -64,11 +100,17 @@ npm install
             -styles 
 
 
-3. fazer design do site web e mobile
+----
+
+-usar o App.jsx para o front end e conectar a API
+
+
+
+**3. fazer design do site web e mobile**
         -usar figma e react
 
-4. versão mobile
-5. fazer deploy
+**4. versão mobile**
+**5. fazer deploy**
 
 
 
