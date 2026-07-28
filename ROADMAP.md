@@ -41,20 +41,20 @@ npm run dev
     **minha estrutura de pastas para o backend**
         backend/
 app/
-    __init__.py        # Inicializa a app Flask e carrega extensões
-        routes/            # Em vez de apenas api/
-            auth.py        # Blueprint de Autenticação
-            products.py    # Blueprint de Produtos
-            categories.py  # Blueprint de Categorias
+    __init__.py        #Inicializa a app Flask e carrega extensões
+        routes/            
+            auth.py        
+            products.py    
+            categories.py  
         models/            # Modelos do banco (ex: SQLAlchemy)
             user.py
             product.py
-        services/          # Regras de negócio ou lógica de banco se necessário
+        services/         
     tests/
-    config.py              # Configurações de dev, prod e banco de dados
-    extensions.py          # Instâncias de db, cors, jwt, etc.
-    requirements.txt       # Cuidado com o typo no arquivo ("requeriments")
-    run.py                 # Arquivo de entrada para rodar a aplicação
+    config.py              #Configurações de dev, prod e banco de dados
+    extensions.py          #Instâncias de db, cors, jwt, etc.
+    requirements.txt       
+    run.py                 
 
 --
 comando pra ativar o .venv dentro do backend:

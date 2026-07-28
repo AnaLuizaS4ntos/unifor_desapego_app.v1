@@ -1,0 +1,168 @@
+import { PlusCircle, Search, Gift, Heart, Sparkles, CheckCircle2 } from 'lucide-react';
+
+export const Header = ({
+  searchQuery,
+  setSearchQuery,
+  onlyDonations,
+  setOnlyDonations,
+  onlyFavorites,
+  setOnlyFavorites,
+  favoritesCount,
+  totalItemsCount,
+  donationCount,
+  onOpenNewItemModal,
+  onOpenPaletteModal,
+  selectedCategory,
+  setSelectedCategory
+}) => {
+  return (
+    <header className="sticky top-0 z-40 bg-[#473469] text-white shadow-lg border-b border-[#AE8FBA]/30">
+      {/* Top Banner Notice for UNIFOR */}
+      <div className="bg-[#33224E] text-[#F2E7D2] text-xs py-1.5 px-4 font-medium flex items-center justify-between border-b border-[#AE8FBA]/20">
+        <div className="flex items-center space-x-2 max-w-7xl mx-auto w-full justify-between">
+          <div className="flex items-center space-x-2 overflow-hidden text-ellipsis whitespace-nowrap">
+            <span className="inline-block w-2 h-2 rounded-full bg-[#10B981] animate-pulse"></span>
+            <span>UNIFOR Desapego • Feito por alunos de Ciência da Computação para a comunidade campus</span>
+          </div>
+          <div className="hidden sm:flex items-center space-x-3 text-xs opacity-90">
+            <span className="flex items-center gap-1">
+              <CheckCircle2 className="w-3.5 h-3.5 text-[#10B981]" /> 100% Gratuito entre Alunos
+            </span>
+            <button 
+              onClick={onOpenPaletteModal}
+              className="text-[#F79EB1] hover:underline flex items-center gap-1 font-semibold ml-2"
+            >
+              <Sparkles className="w-3.5 h-3.5" /> Ver Paleta & Design Specs
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Header Container */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5">
+        <div className="flex items-center justify-between gap-3">
+          
+          {/* Logo & Brand */}
+          <div className="flex items-center space-x-3">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#AE8FBA] via-[#4C5E91] to-[#F79EB1] p-0.5 shadow-md flex-shrink-0">
+              <div className="w-full h-full bg-[#473469] rounded-[10px] flex items-center justify-center">
+                <span className="text-xl font-black text-[#F2E7D2] tracking-wider">U</span>
+              </div>
+            </div>
+            <div>
+              <div className="flex items-center space-x-2">
+                <h1 className="text-lg sm:text-xl font-bold tracking-tight text-[#F2E7D2]">
+                  Uni<span className="text-[#F79EB1]">Desapego</span>
+                </h1>
+                <span className="bg-[#4C5E91]/60 text-[#F2E7D2] text-[10px] font-semibold px-2 py-0.5 rounded-full border border-[#AE8FBA]/30">
+                  UNIFOR
+                </span>
+              </div>
+              <p className="text-[11px] text-[#AE8FBA] hidden sm:block">
+                Marketplace universitário & doações de coisas que você não usa mais
+              </p>
+            </div>
+          </div>
+
+          {/* Desktop Search Bar */}
+          <div className="hidden md:flex flex-1 max-w-md mx-4 relative">
+            <div className="relative w-full">
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#AE8FBA]" />
+              <input
+                type="text"
+                placeholder="Buscar Arduino, Jaleco, Cálculo, Monitor, Mesa..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-10 pr-9 py-2 rounded-full bg-[#352552] border border-[#AE8FBA]/40 text-sm text-[#F2E7D2] placeholder-[#AE8FBA]/70 focus:outline-none focus:ring-2 focus:ring-[#F79EB1] focus:border-transparent transition"
+              />
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery('')}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-[#AE8FBA] hover:text-white bg-[#473469] w-5 h-5 rounded-full flex items-center justify-center"
+                >
+                  ✕
+                </button>
+              )}
+            </div>
+          </div>
+
+          {/* Right Action Buttons */}
+          <div className="flex items-center space-x-2 sm:space-x-3">
+            
+            {/* Donations Filter Toggle */}
+            <button
+              onClick={() => {
+                setOnlyDonations(!onlyDonations);
+                if (onlyFavorites) setOnlyFavorites(false);
+              }}
+              className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition border ${
+                onlyDonations
+                  ? 'bg-[#10B981] text-white border-[#10B981] shadow-md'
+                  : 'bg-[#352552] text-[#F2E7D2] border-[#AE8FBA]/40 hover:bg-[#4C5E91]/40'
+              }`}
+            >
+              <Gift className={`w-3.5 h-3.5 ${onlyDonations ? 'animate-bounce' : 'text-[#10B981]'}`} />
+              <span className="hidden xs:inline">Doações</span>
+              <span className="bg-[#473469] text-[#F2E7D2] text-[10px] px-1.5 py-0.2 rounded-full font-bold ml-1">
+                {donationCount}
+              </span>
+            </button>
+
+            {/* Favorites Toggle Button */}
+            <button
+              onClick={() => {
+                setOnlyFavorites(!onlyFavorites);
+                if (onlyDonations) setOnlyDonations(false);
+              }}
+              className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition border ${
+                onlyFavorites
+                  ? 'bg-[#F79EB1] text-[#473469] border-[#F79EB1] shadow-md font-bold'
+                  : 'bg-[#352552] text-[#F2E7D2] border-[#AE8FBA]/40 hover:bg-[#4C5E91]/40'
+              }`}
+            >
+              <Heart className={`w-3.5 h-3.5 ${onlyFavorites ? 'fill-[#473469]' : 'text-[#F79EB1]'}`} />
+              <span className="hidden sm:inline">Salvos</span>
+              {favoritesCount > 0 && (
+                <span className="bg-[#473469] text-[#F79EB1] text-[10px] px-1.5 py-0.2 rounded-full font-bold">
+                  {favoritesCount}
+                </span>
+              )}
+            </button>
+
+            {/* Desapegar / Post New Item Button */}
+            <button
+              onClick={onOpenNewItemModal}
+              className="flex items-center space-x-2 bg-gradient-to-r from-[#10B981] to-[#059669] hover:from-[#059669] hover:to-[#047857] text-white text-xs sm:text-sm font-bold px-3.5 sm:px-4 py-2 rounded-full shadow-md hover:shadow-lg transition transform active:scale-95"
+            >
+              <PlusCircle className="w-4 h-4" />
+              <span>Desapegar +</span>
+            </button>
+
+          </div>
+        </div>
+
+        {/* Mobile Search Input (Visible on mobile) */}
+        <div className="mt-3 md:hidden">
+          <div className="relative w-full">
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#AE8FBA]" />
+            <input
+              type="text"
+              placeholder="Buscar em todos os blocos..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-10 pr-9 py-2 rounded-full bg-[#352552] border border-[#AE8FBA]/40 text-sm text-[#F2E7D2] placeholder-[#AE8FBA]/70 focus:outline-none focus:ring-2 focus:ring-[#F79EB1]"
+            />
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery('')}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-[#AE8FBA] bg-[#473469] w-5 h-5 rounded-full flex items-center justify-center"
+              >
+                ✕
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+    </header>
+  );
+};
