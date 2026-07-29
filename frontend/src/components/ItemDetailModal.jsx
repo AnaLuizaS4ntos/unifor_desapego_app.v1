@@ -13,6 +13,7 @@ import {
   Building2 
 } from 'lucide-react';
 
+
 export const ItemDetailModal = ({
   item,
   onClose,
@@ -21,6 +22,7 @@ export const ItemDetailModal = ({
   onContactWhatsApp
 }) => {
   if (!item) return null;
+
 
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [copiedLink, setCopiedLink] = useState(false);

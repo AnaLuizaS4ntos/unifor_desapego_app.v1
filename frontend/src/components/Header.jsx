@@ -1,4 +1,5 @@
 import { PlusCircle, Search, Gift, Heart, Sparkles, CheckCircle2 } from 'lucide-react';
+import logoUnidesapego from '../assets/Group 1.png';
 
 export const Header = ({
   searchQuery,
@@ -16,8 +17,9 @@ export const Header = ({
   setSelectedCategory
 }) => {
   return (
+
     <header className="sticky top-0 z-40 bg-[#473469] text-white shadow-lg border-b border-[#AE8FBA]/30">
-      {/* Top Banner Notice for UNIFOR */}
+      
       <div className="bg-[#33224E] text-[#F2E7D2] text-xs py-1.5 px-4 font-medium flex items-center justify-between border-b border-[#AE8FBA]/20">
         <div className="flex items-center space-x-2 max-w-7xl mx-auto w-full justify-between">
           <div className="flex items-center space-x-2 overflow-hidden text-ellipsis whitespace-nowrap">
@@ -38,17 +40,19 @@ export const Header = ({
         </div>
       </div>
 
-      {/* Main Header Container */}
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5">
         <div className="flex items-center justify-between gap-3">
           
-          {/* Logo & Brand */}
+
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#AE8FBA] via-[#4C5E91] to-[#F79EB1] p-0.5 shadow-md flex-shrink-0">
-              <div className="w-full h-full bg-[#473469] rounded-[10px] flex items-center justify-center">
-                <span className="text-xl font-black text-[#F2E7D2] tracking-wider">U</span>
-              </div>
-            </div>
+            <img 
+              src={logoUnidesapego} 
+              alt="Logo UniDesapego" 
+              className="w-10 h-10 object-contain flex-shrink-0 drop-shadow-sm"
+            />
+            
+            {/* Aqui continua o código do texto que você me mandou na print */}
             <div>
               <div className="flex items-center space-x-2">
                 <h1 className="text-lg sm:text-xl font-bold tracking-tight text-[#F2E7D2]">
