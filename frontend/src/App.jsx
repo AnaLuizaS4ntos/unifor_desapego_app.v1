@@ -9,16 +9,39 @@ import { ItemDetailModal } from './components/ItemDetailModal';
 import { NewItemModal } from './components/NewItemModal';
 import { PaletteShowcaseModal } from './components/PaletteShowcaseModal';
 import { MobileBottomNav } from './components/MobileBottomNav';
+import { AuthModal } from './components/AuthModal'; // <-- IMPORT DO SEU MODAL AQUI
 import { Sparkles } from 'lucide-react';
 import './index.css'
 import './App.css';
 
 export default function App() {
-  // Estado principal dos itens
-  const [items, setItems] = useState([]);
+  // ---------------------------------------------------------
+  // ESTADO DE AUTENTICAÇÃO (NOVO)
+  // ---------------------------------------------------------
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [currentUser, setCurrentUser] = useState(() => {
+    const saved = localStorage.getItem('unifor_user');
+    if (saved) {
+      try { return JSON.parse(saved); } catch (e) { console.error(e); }
+    }
+    return null;
+  });
 
-  // Favoritos salvos no navegador (Local Storage)
+  useEffect(() => {
+    if (currentUser) {
+      localStorage.setItem('unifor_user', JSON.stringify(currentUser));
+    } else {
+      localStorage.removeItem('unifor_user');
+    }
+  }, [currentUser]);
+
+  // ---------------------------------------------------------
+  // ESTADOS DOS ITENS
+  // ---------------------------------------------------------
+  const [items, setItems] = useState([]);
+  
   const [favoriteIds, setFavoriteIds] = useState(() => {
+    
     const saved = localStorage.getItem('unifor_marketplace_favs');
     if (saved) {
       try { return JSON.parse(saved); } catch (e) { console.error(e); }
@@ -34,12 +57,14 @@ export default function App() {
   useEffect(() => {
     const fetchAPI = async () => {
       try {
-        // Quando o backend estiver pronto, ele vai puxar daqui:
+        
         const response = await axios.get("http://127.0.0.1:5000/products");
         setItems(response.data);
+
       } catch (error) {
+        
         console.error("Backend não encontrado, carregando dados de teste visuais...", error);
-        // Fallback temporário até criarmos a rota no Flask
+        
         setItems([
           {
             id: 'item-1',
@@ -128,7 +153,18 @@ export default function App() {
     setSortBy('recent');
   };
 
-  // Contagem de categorias dinâmica
+  // Lógica de Login/Logout
+  const handleLogin = (user) => {
+    setCurrentUser(user);
+    showToast(`Bem-vindo(a), ${user.name}! 🎓`);
+  };
+
+  const handleLogout = () => {
+    setCurrentUser(null);
+    showToast('Você saiu da conta.');
+    setIsAuthModalOpen(false);
+  };
+
   const categoryCounts = useMemo(() => {
     const counts = { 'Todos': items.length, 'Doação': 0 };
     items.forEach(i => {
@@ -138,7 +174,7 @@ export default function App() {
     return counts;
   }, [items]);
 
-  // Lógica de Filtros
+
   const filteredItems = useMemo(() => {
     return items.filter(item => {
       if (searchQuery.trim()) {
@@ -177,15 +213,27 @@ export default function App() {
         </div>
       )}
 
+      {/* AQUI VOCÊ PASSA A FUNÇÃO PARA O HEADER ABRIR O MODAL */}
       <Header
         searchQuery={searchQuery} setSearchQuery={setSearchQuery}
         onlyDonations={onlyDonations} setOnlyDonations={setOnlyDonations}
         onlyFavorites={onlyFavorites} setOnlyFavorites={setOnlyFavorites}
         favoritesCount={favoriteIds.length} totalItemsCount={items.length}
         donationCount={donationCount}
-        onOpenNewItemModal={() => setIsNewItemModalOpen(true)}
+        onOpenNewItemModal={() => {
+          // Lógica extra: Se não estiver logado, não deixa postar item novo!
+          if (!currentUser) {
+            setIsAuthModalOpen(true);
+            showToast("Faça login para desapegar de um item!");
+          } else {
+            setIsNewItemModalOpen(true);
+          }
+        }}
         onOpenPaletteModal={() => setIsPaletteModalOpen(true)}
         selectedCategory={selectedCategory} setSelectedCategory={setSelectedCategory}
+        // Passando estado do usuário para o Header (caso ele tenha botão de Perfil)
+        currentUser={currentUser}
+        onOpenAuthModal={() => setIsAuthModalOpen(true)}
       />
 
       <CategoryBar
@@ -275,6 +323,17 @@ export default function App() {
         isOpen={isPaletteModalOpen} onClose={() => setIsPaletteModalOpen(false)}
       />
 
+      {/* -------------------------------------------------------- */}
+      {/* AQUI ESTÁ O MODAL DE AUTENTICAÇÃO PLUGADO!                 */}
+      {/* -------------------------------------------------------- */}
+      <AuthModal 
+        isOpen={isAuthModalOpen}
+        onClose={() => setIsAuthModalOpen(false)}
+        currentUser={currentUser}
+        onLogin={handleLogin}
+        onLogout={handleLogout}
+      />
+
       <MobileBottomNav
         activeTab={onlyDonations ? 'donations' : onlyFavorites ? 'favorites' : 'all'}
         setActiveTab={(tab) => {
@@ -284,7 +343,14 @@ export default function App() {
           else setSelectedCategory('Todos');
         }}
         favoritesCount={favoriteIds.length} donationCount={donationCount}
-        onOpenNewItemModal={() => setIsNewItemModalOpen(true)}
+        onOpenNewItemModal={() => {
+          if (!currentUser) {
+            setIsAuthModalOpen(true);
+            showToast("Faça login para desapegar de um item!");
+          } else {
+            setIsNewItemModalOpen(true);
+          }
+        }}
         onOpenPaletteModal={() => setIsPaletteModalOpen(true)}
       />
 
@@ -301,7 +367,9 @@ export default function App() {
             <span>•</span>
             <button onClick={handleResetFilters} className="hover:underline">Ver Todos os Itens</button>
             <span>•</span>
-            <button onClick={() => setIsNewItemModalOpen(true)} className="hover:underline">Desapegar de um Item</button>
+            <button onClick={() => setIsAuthModalOpen(true)} className="hover:underline">
+              {currentUser ? 'Meu Perfil' : 'Fazer Login'}
+            </button>
           </div>
         </div>
       </footer>

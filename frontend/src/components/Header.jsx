@@ -1,4 +1,4 @@
-import { PlusCircle, Search, Gift, Heart, Sparkles, CheckCircle2 } from 'lucide-react';
+import { Search, PlusCircle, Gift, Heart, Sparkles, User } from 'lucide-react';
 import logoUnidesapego from '../assets/Group 1.png';
 
 export const Header = ({
@@ -14,7 +14,9 @@ export const Header = ({
   onOpenNewItemModal,
   onOpenPaletteModal,
   selectedCategory,
-  setSelectedCategory
+  setSelectedCategory,
+  currentUser,
+  onOpenAuthModal
 }) => {
   return (
 
@@ -132,6 +134,46 @@ export const Header = ({
                 </span>
               )}
             </button>
+
+            {/* ----- ÁREA DO USUÁRIO ----- */}
+          <div className="flex items-center space-x-4">
+            
+            {currentUser ? (
+              // Mostra a foto e o nome se estiver logado
+              <button 
+                onClick={onOpenAuthModal} 
+                className="flex items-center space-x-2 hover:opacity-80 transition bg-[#352552] py-1.5 px-3 rounded-full border border-[#AE8FBA]/30"
+              >
+                <img 
+                  src={currentUser.avatarUrl} 
+                  alt="Perfil" 
+                  className="w-7 h-7 rounded-full border border-[#F79EB1] object-cover"
+                />
+                <span className="text-xs font-bold text-[#F2E7D2] hidden sm:block">
+                  {currentUser.name.split(' ')[0]} {/* Pega só o primeiro nome */}
+                </span>
+              </button>
+            ) : (
+              // Mostra o botão de Entrar se não estiver logado
+              <button 
+                onClick={onOpenAuthModal} 
+                className="flex items-center space-x-1.5 text-[#AE8FBA] hover:text-[#F2E7D2] transition font-bold text-xs"
+              >
+                <User className="w-5 h-5" />
+                <span className="hidden sm:block">Entrar</span>
+              </button>
+            )}
+
+            {/* O seu botão de Desapegar já existente deve estar logo abaixo daqui! */}
+            <button
+              onClick={onOpenNewItemModal}
+              // ... classes do seu botão de desapegar ...
+            >
+               {/* ... */}
+            </button>
+            
+          </div>
+
 
             {/* Desapegar / Post New Item Button */}
             <button
