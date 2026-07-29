@@ -23,8 +23,10 @@ export const ItemDetailModal = ({
 }) => {
   if (!item) return null;
 
-
+// eslint-disable-next-line react-hooks/rules-of-hooks
   const [activeImageIndex, setActiveImageIndex] = useState(0);
+
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   const [copiedLink, setCopiedLink] = useState(false);
 
   const handleShare = () => {

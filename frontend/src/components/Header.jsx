@@ -1,4 +1,4 @@
-import { Search, PlusCircle, Gift, Heart, Sparkles, User } from 'lucide-react';
+import { Search, PlusCircle, Gift, Heart, User, CheckCircle2, Sparkles } from 'lucide-react';
 import logoUnidesapego from '../assets/Group 1.png';
 
 export const Header = ({
@@ -9,12 +9,9 @@ export const Header = ({
   onlyFavorites,
   setOnlyFavorites,
   favoritesCount,
-  totalItemsCount,
   donationCount,
   onOpenNewItemModal,
   onOpenPaletteModal,
-  selectedCategory,
-  setSelectedCategory,
   currentUser,
   onOpenAuthModal
 }) => {

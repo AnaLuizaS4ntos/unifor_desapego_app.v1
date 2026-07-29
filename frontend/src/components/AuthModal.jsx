@@ -46,17 +46,6 @@ export const AuthModal = ({
 
   if (!isOpen) return null;
 
-  // Register form state
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [matricula, setMatricula] = useState('');
-  const [course, setCourse] = useState('Ciência da Computação');
-  const [semester, setSemester] = useState('5º Semestre');
-  const [whatsapp, setWhatsapp] = useState('');
-  const [password, setPassword] = useState('');
-
-  const [errorMessage, setErrorMessage] = useState('');
-
   const handleLoginSubmit = (e) => {
     e.preventDefault();
     if (!loginEmail.trim()) {
