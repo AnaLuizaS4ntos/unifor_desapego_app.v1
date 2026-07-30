@@ -4,9 +4,7 @@ from app.models.usuarios import Usuario
 
 auth_bp = Blueprint("auth", __name__)
 
-# ==================================================
 # CADASTRAR USUÁRIO
-# ==================================================
 
 @auth_bp.route("/register", methods=["POST"], strict_slashes=False)
 def register():
@@ -53,9 +51,7 @@ def register():
     }), 201
 
 
-# ==================================================
 # LOGIN
-# ==================================================
 
 @auth_bp.route("/login", methods=["POST"], strict_slashes=False)
 def login():
@@ -86,9 +82,7 @@ def login():
     })
 
 
-# ==================================================
 # PERFIL
-# ==================================================
 
 @auth_bp.route("/profile/<int:id>", methods=["GET"], strict_slashes=False)
 def perfil(id):
@@ -110,9 +104,7 @@ def perfil(id):
     })
 
 
-# ==================================================
 # EDITAR PERFIL
-# ==================================================
 
 @auth_bp.route("/profile/<int:id>", methods=["PUT"], strict_slashes=False)
 def editar_perfil(id):

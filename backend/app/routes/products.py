@@ -5,7 +5,7 @@ from app.models.produto import Produto
 products_bp = Blueprint("products", __name__)
 
 
-# AQUI ESTÁ A MÁGICA: strict_slashes=False direto na rota!
+#strict_slashes=False
 @products_bp.route("", methods=["GET"], strict_slashes=False)
 def listar_produtos():
     produtos = Produto.query.all()
@@ -37,7 +37,7 @@ def listar_produtos():
 
     return jsonify(lista)
 
-# AQUI TAMBÉM: strict_slashes=False no POST!
+# strict_slashes=False no POST!
 @products_bp.route("", methods=["POST"], strict_slashes=False)
 def cadastrar_produto():
     dados = request.get_json()
@@ -46,14 +46,12 @@ def cadastrar_produto():
     if dados.get("images") and isinstance(dados["images"], list) and len(dados["images"]) > 0:
         imagem_url = dados["images"][0]
 
-    # Tratamento seguro para converter o ID do usuário em número inteiro
+    # Converte o usuario_id para número inteiro de forma segura para o PostgreSQL não rejeitar
     raw_user_id = dados.get("usuario_id")
-    usuario_id_int = 1 # Valor padrão caso venha vazio
-    
+    usuario_id_int = 1  # ID padrão caso venha vazio ou inválido
     if raw_user_id is not None:
         try:
-            # Se vier no formato "user-123", remove o prefixo e converte para int
-            clean_id = str(raw_user_id).replace("user-", "")
+            clean_id = str(raw_user_id).replace("user-", "").strip()
             usuario_id_int = int(clean_id)
         except ValueError:
             usuario_id_int = 1
