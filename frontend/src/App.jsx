@@ -54,7 +54,7 @@ export default function App() {
     const fetchAPI = async () => {
       try {
         
-        const response = await axios.get("http://127.0.0.1:5000/api/products");
+        const response = await axios.get("[https://uni-desapego-d2od.onrender.com/api/products](https://uni-desapego-d2od.onrender.com/api/products)")
         setItems(response.data);
 
       } catch (error) {
@@ -149,7 +149,7 @@ const handleAddItem = async (newItem) => {
       };
 
       // 3. Faz a requisição POST para o backend
-      const response = await axios.post("http://127.0.0.1:5000/api/products/", produtoParaBackend);
+      const response = await axios.post("https://uni-desapego-d2od.onrender.com/api/products/", produtoParaBackend);
 
       // 4. Se deu certo, atualiza a tela instantaneamente com o ID gerado pelo banco
       const itemSalvo = {
