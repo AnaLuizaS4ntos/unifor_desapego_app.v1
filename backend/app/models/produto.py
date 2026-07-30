@@ -18,7 +18,7 @@ class Produto(db.Model):
 
     localizacao = db.Column(db.String(80))
 
-    imagem = db.Column(db.Text(255))
+    imagem = db.Column(db.Text)
 
     is_doacao = db.Column(db.Boolean, default=False)
 
