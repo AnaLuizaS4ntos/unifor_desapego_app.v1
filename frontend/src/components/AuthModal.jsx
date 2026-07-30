@@ -80,7 +80,7 @@ export const AuthModal = ({
 
     try {
       // Fazendo a requisição real para o seu backend em Python (Flask)
-      const response = await fetch('[https://uni-desapego-d2od.onrender.com](https://uni-desapego-d2od.onrender.com)', {
+      const response = await fetch("https://uni-desapego-d2od.onrender.com/api/auth/register", {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
