@@ -8,9 +8,8 @@ auth_bp = Blueprint("auth", __name__)
 # CADASTRAR USUÁRIO
 # ==================================================
 
-@auth_bp.route("/register", methods=["POST"])
+@auth_bp.route("/register", methods=["POST"], strict_slashes=False)
 def register():
-
     dados = request.get_json()
 
     if not dados:
@@ -28,17 +27,11 @@ def register():
         }), 400
 
     usuario = Usuario(
-
         nome=dados["name"],
-
         email=dados["email"],
-
         curso=dados.get("course"),
-
         semestre=dados.get("semester"),
-
         telefone=dados.get("whatsapp")
-
     )
 
     usuario.set_password(dados["senha"])
@@ -47,25 +40,15 @@ def register():
     db.session.commit()
 
     return jsonify({
-
         "mensagem": "Usuário cadastrado com sucesso!",
-
         "usuario": {
-
             "id": usuario.id,
-
             "name": usuario.nome,
-
             "email": usuario.email,
-
             "course": usuario.curso,
-
             "semester": usuario.semestre,
-
             "whatsapp": usuario.telefone
-
         }
-
     }), 201
 
 
@@ -73,9 +56,8 @@ def register():
 # LOGIN
 # ==================================================
 
-@auth_bp.route("/login", methods=["POST"])
+@auth_bp.route("/login", methods=["POST"], strict_slashes=False)
 def login():
-
     dados = request.get_json()
 
     usuario = Usuario.query.filter_by(
@@ -83,37 +65,23 @@ def login():
     ).first()
 
     if usuario is None:
-
         return jsonify({
-
             "erro": "Usuário não encontrado."
-
         }), 404
 
     if not usuario.check_password(dados["senha"]):
-
         return jsonify({
-
             "erro": "Senha incorreta."
-
         }), 401
 
     return jsonify({
-
         "id": usuario.id,
-
         "name": usuario.nome,
-
         "email": usuario.email,
-
         "course": usuario.curso,
-
         "semester": usuario.semestre,
-
         "whatsapp": usuario.telefone,
-
         "verifiedStudent": True
-
     })
 
 
@@ -121,35 +89,23 @@ def login():
 # PERFIL
 # ==================================================
 
-@auth_bp.route("/profile/<int:id>", methods=["GET"])
+@auth_bp.route("/profile/<int:id>", methods=["GET"], strict_slashes=False)
 def perfil(id):
-
     usuario = Usuario.query.get(id)
 
     if usuario is None:
-
         return jsonify({
-
             "erro": "Usuário não encontrado."
-
         }), 404
 
     return jsonify({
-
         "id": usuario.id,
-
         "name": usuario.nome,
-
         "email": usuario.email,
-
         "course": usuario.curso,
-
         "semester": usuario.semestre,
-
         "whatsapp": usuario.telefone,
-
         "verifiedStudent": True
-
     })
 
 
@@ -157,17 +113,13 @@ def perfil(id):
 # EDITAR PERFIL
 # ==================================================
 
-@auth_bp.route("/profile/<int:id>", methods=["PUT"])
+@auth_bp.route("/profile/<int:id>", methods=["PUT"], strict_slashes=False)
 def editar_perfil(id):
-
     usuario = Usuario.query.get(id)
 
     if usuario is None:
-
         return jsonify({
-
             "erro": "Usuário não encontrado."
-
         }), 404
 
     dados = request.get_json()
@@ -184,9 +136,7 @@ def editar_perfil(id):
     db.session.commit()
 
     return jsonify({
-
         "mensagem": "Perfil atualizado com sucesso."
-
     })
 
 
@@ -194,24 +144,18 @@ def editar_perfil(id):
 # EXCLUIR USUÁRIO
 # ==================================================
 
-@auth_bp.route("/profile/<int:id>", methods=["DELETE"])
+@auth_bp.route("/profile/<int:id>", methods=["DELETE"], strict_slashes=False)
 def excluir_usuario(id):
-
     usuario = Usuario.query.get(id)
 
     if usuario is None:
-
         return jsonify({
-
             "erro": "Usuário não encontrado."
-
         }), 404
 
     db.session.delete(usuario)
     db.session.commit()
 
     return jsonify({
-
         "mensagem": "Usuário removido com sucesso."
-
     })
