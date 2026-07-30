@@ -5,7 +5,7 @@ from app.models.produto import Produto
 products_bp = Blueprint("products", __name__)
 
 # AQUI ESTÁ A MÁGICA: strict_slashes=False direto na rota!
-@products_bp.route("/", methods=["GET"], strict_slashes=False)
+@products_bp.route("", methods=["GET"], strict_slashes=False)
 def listar_produtos():
     produtos = Produto.query.all()
     lista = []
@@ -37,7 +37,7 @@ def listar_produtos():
     return jsonify(lista)
 
 # AQUI TAMBÉM: strict_slashes=False no POST!
-@products_bp.route("/", methods=["POST"], strict_slashes=False)
+@products_bp.route("", methods=["POST"], strict_slashes=False)
 def cadastrar_produto():
     dados = request.get_json()
 
