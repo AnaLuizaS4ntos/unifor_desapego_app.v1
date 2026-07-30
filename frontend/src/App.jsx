@@ -290,7 +290,7 @@ const handleAddItem = async (newItem) => {
           <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
             <div>
               <h2 className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-[#F2E7D2] tracking-tight">
-                Desapegue do que não usa mais no campus 🎓
+                Desapegue do que não usa mais no campus
               </h2>
               <p className="text-xs sm:text-sm text-[#AE8FBA] mt-1.5 max-w-2xl leading-relaxed">
                 De Arduinos de computação a jalecos de medicina. Passe adiante ou encontre o que precisa com entrega rápida nos blocos da UNIFOR.
