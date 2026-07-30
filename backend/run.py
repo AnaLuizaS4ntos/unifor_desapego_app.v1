@@ -11,12 +11,18 @@ app = Flask(__name__)
 
 CORS(app)
 
-app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv(
-    "DATABASE_URL",
+# 1. Pega a URL (do Render ou do seu PC)
+minha_url_db = os.getenv(
+    "DATABASE_URL", 
     "postgresql://postgres:eudeybanana@localhost:5432/unidesapego"
 )
 
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+# 2. Arruma o bug do Render caso ele mande 'postgres://' no lugar de 'postgresql://'
+if minha_url_db.startswith("postgres://"):
+    minha_url_db = minha_url_db.replace("postgres://", "postgresql://", 1)
+
+# 3. Salva na configuração do Flask
+app.config["SQLALCHEMY_DATABASE_URI"] = minha_url_db
 
 db.init_app(app)
 

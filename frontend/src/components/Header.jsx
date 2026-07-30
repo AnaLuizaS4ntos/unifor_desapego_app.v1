@@ -15,6 +15,7 @@ export const Header = ({
   currentUser,
   onOpenAuthModal
 }) => {
+
   return (
 
     <header className="sticky top-0 z-40 bg-[#473469] text-white shadow-lg border-b border-[#AE8FBA]/30">
@@ -41,9 +42,9 @@ export const Header = ({
 
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5">
-        <div className="flex items-center justify-between gap-3">
+        {/* AQUI ESTÁ A PRIMEIRA MUDANÇA: flex-wrap e w-full adicionados */}
+        <div className="flex flex-wrap items-center justify-between gap-y-3 gap-x-2 w-full">
           
-
           <div className="flex items-center space-x-3">
             <img 
               src={logoUnidesapego} 
@@ -51,7 +52,7 @@ export const Header = ({
               className="w-10 h-10 object-contain flex-shrink-0 drop-shadow-sm"
             />
             
-            {/* Aqui continua o código do texto que você me mandou na print */}
+            
             <div>
               <div className="flex items-center space-x-2">
                 <h1 className="text-lg sm:text-xl font-bold tracking-tight text-[#F2E7D2]">
@@ -90,7 +91,8 @@ export const Header = ({
           </div>
 
           {/* Right Action Buttons */}
-          <div className="flex items-center space-x-2 sm:space-x-3">
+          {/* AQUI ESTÁ A SEGUNDA MUDANÇA: flex-wrap e gap-2 adicionados */}
+          <div className="flex flex-wrap items-center justify-end gap-2 sm:gap-3">
             
             {/* Donations Filter Toggle */}
             <button
@@ -133,44 +135,31 @@ export const Header = ({
             </button>
 
             {/* ----- ÁREA DO USUÁRIO ----- */}
-          <div className="flex items-center space-x-4">
-            
-            {currentUser ? (
-              // Mostra a foto e o nome se estiver logado
-              <button 
-                onClick={onOpenAuthModal} 
-                className="flex items-center space-x-2 hover:opacity-80 transition bg-[#352552] py-1.5 px-3 rounded-full border border-[#AE8FBA]/30"
-              >
-                <img 
-                  src={currentUser.avatarUrl} 
-                  alt="Perfil" 
-                  className="w-7 h-7 rounded-full border border-[#F79EB1] object-cover"
-                />
-                <span className="text-xs font-bold text-[#F2E7D2] hidden sm:block">
-                  {currentUser.name.split(' ')[0]} {/* Pega só o primeiro nome */}
-                </span>
-              </button>
-            ) : (
-              // Mostra o botão de Entrar se não estiver logado
-              <button 
-                onClick={onOpenAuthModal} 
-                className="flex items-center space-x-1.5 text-[#AE8FBA] hover:text-[#F2E7D2] transition font-bold text-xs"
-              >
-                <User className="w-5 h-5" />
-                <span className="hidden sm:block">Entrar</span>
-              </button>
-            )}
-
-            {/* O seu botão de Desapegar já existente deve estar logo abaixo daqui! */}
-            <button
-              onClick={onOpenNewItemModal}
-              // ... classes do seu botão de desapegar ...
-            >
-               {/* ... */}
-            </button>
-            
-          </div>
-
+            <div className="flex items-center space-x-4">
+              {currentUser ? (
+                <button 
+                  onClick={onOpenAuthModal} 
+                  className="flex items-center space-x-2 hover:opacity-80 transition bg-[#352552] py-1.5 px-3 rounded-full border border-[#AE8FBA]/30"
+                >
+                  <img 
+                    src={currentUser.avatarUrl} 
+                    alt="Perfil" 
+                    className="w-7 h-7 rounded-full border border-[#F79EB1] object-cover"
+                  />
+                  <span className="text-xs font-bold text-[#F2E7D2] hidden sm:block">
+                    {currentUser.name.split(' ')[0]}
+                  </span>
+                </button>
+              ) : (
+                <button 
+                  onClick={onOpenAuthModal} 
+                  className="flex items-center space-x-1.5 text-[#AE8FBA] hover:text-[#F2E7D2] transition font-bold text-xs"
+                >
+                  <User className="w-5 h-5" />
+                  <span className="hidden sm:block">Entrar</span>
+                </button>
+              )}
+            </div>
 
             {/* Desapegar / Post New Item Button */}
             <button
@@ -178,7 +167,8 @@ export const Header = ({
               className="flex items-center space-x-2 bg-gradient-to-r from-[#10B981] to-[#059669] hover:from-[#059669] hover:to-[#047857] text-white text-xs sm:text-sm font-bold px-3.5 sm:px-4 py-2 rounded-full shadow-md hover:shadow-lg transition transform active:scale-95"
             >
               <PlusCircle className="w-4 h-4" />
-              <span>Desapegar +</span>
+              {/* AQUI ESTÁ A TERCEIRA MUDANÇA: O texto se esconde no mobile */}
+              <span className="hidden sm:inline">Desapegar +</span>
             </button>
 
           </div>
