@@ -13,7 +13,7 @@ CORS(app)
 
 app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv(
     "DATABASE_URL",
-    "postgresql://postgres:senha@localhost:5432/unidesapego"
+    "postgresql://postgres:eudeybanana@localhost:5432/unidesapego"
 )
 
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
