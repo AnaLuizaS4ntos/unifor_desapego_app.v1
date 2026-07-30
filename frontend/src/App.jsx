@@ -15,9 +15,7 @@ import './index.css'
 import './App.css';
 
 export default function App() {
-  // ---------------------------------------------------------
-  // ESTADO DE AUTENTICAÇÃO (NOVO)
-  // ---------------------------------------------------------
+
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [currentUser, setCurrentUser] = useState(() => {
     const saved = localStorage.getItem('unifor_user');
@@ -35,9 +33,7 @@ export default function App() {
     }
   }, [currentUser]);
 
-  // ---------------------------------------------------------
-  // ESTADOS DOS ITENS
-  // ---------------------------------------------------------
+  
   const [items, setItems] = useState([]);
   
   const [favoriteIds, setFavoriteIds] = useState(() => {
@@ -58,7 +54,7 @@ export default function App() {
     const fetchAPI = async () => {
       try {
         
-        const response = await axios.get("http://127.0.0.1:5000/products");
+        const response = await axios.get("http://127.0.0.1:5000/api/products");
         setItems(response.data);
 
       } catch (error) {
@@ -130,9 +126,53 @@ export default function App() {
     });
   };
 
-  const handleAddItem = (newItem) => {
-    setItems(prev => [newItem, ...prev]);
-    showToast('✨ Anúncio publicado localmente (Integraremos o POST depois)!');
+const handleAddItem = async (newItem) => {
+    try {
+      // 1. Barreira de segurança: garante que tem usuário logado
+      if (!currentUser) {
+        showToast("Erro: Você precisa fazer login para anunciar!");
+        setIsAuthModalOpen(true);
+        return;
+      }
+
+      // 2. Monta o objeto exatamente como o seu Flask (products.py) está esperando
+      const produtoParaBackend = {
+        title: newItem.title,
+        description: newItem.description,
+        price: Number(newItem.price) || 0,
+        category: newItem.category,
+        condition: newItem.condition,
+        location: newItem.location,
+        images: newItem.images || [],
+        isDonation: newItem.isDonation,
+        usuario_id: currentUser.id // Pegando o ID do usuário real!
+      };
+
+      // 3. Faz a requisição POST para o backend
+      const response = await axios.post("http://127.0.0.1:5000/api/products/", produtoParaBackend);
+
+      // 4. Se deu certo, atualiza a tela instantaneamente com o ID gerado pelo banco
+      const itemSalvo = {
+        ...newItem,
+        id: response.data.id, 
+        seller: {
+          name: currentUser.name,
+          whatsapp: currentUser.whatsapp || "Não informado",
+          verifiedStudent: true
+        },
+        favoritesCount: 0,
+        views: 0,
+        createdAt: "Agora"
+      };
+
+      setItems(prev => [itemSalvo, ...prev]);
+      setIsNewItemModalOpen(false); // Fecha o modal se estiver aberto
+      showToast('✨ Anúncio publicado com sucesso no banco de dados!');
+
+    } catch (error) {
+      console.error("Erro ao salvar produto:", error);
+      showToast("Erro ao publicar o anúncio. Verifique se o backend está rodando!");
+    }
   };
 
   const handleContactWhatsApp = (item) => {

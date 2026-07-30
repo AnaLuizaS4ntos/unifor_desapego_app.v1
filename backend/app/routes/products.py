@@ -1,54 +1,68 @@
-from flask import Blueprint, jsonify
+from flask import Blueprint, jsonify, request
+from app.database import db
+from app.models.produto import Produto
 
-products_bp = Blueprint('products', __name__)
+products_bp = Blueprint("products", __name__)
 
-@products_bp.route('/', methods=['GET'])
-def get_products():
-    items = [
-        {
-            "id": "item-1",
-            "title": "Kit Arduino Uno R3 + Sensores",
-            "description": "Usado por 1 semestre na disciplina de Hardware. Funciona perfeitamente.",
-            "price": 120,
-            "isDonation": False,
-            "category": "Eletrônicos & Hardware",
-            "condition": "Usado - Bom Estado",
-            "location": "Bloco N (CCT)",
-            "images": ["https://images.unsplash.com/photo-1553406830-ef2513450d76?auto=format&fit=crop&w=800&q=80"],
-            "seller": { 
-                "name": "Ana Luiza", 
-                "course": "Ciência da Computação", 
-                "semester": "Ativo", 
-                "whatsapp": "5585999999999", 
-                "verifiedStudent": True 
+
+@products_bp.route("/", methods=["GET"])
+def listar_produtos():
+    produtos = Produto.query.all()
+    lista = []
+
+    for produto in produtos:
+        lista.append({
+            "id": str(produto.id), # <-- CORREÇÃO AQUI
+            "title": produto.titulo,
+            "description": produto.descricao,
+            "price": produto.preco,
+            "isDonation": produto.is_doacao,
+            "category": produto.categoria,
+            "condition": produto.condicao,
+            "location": produto.localizacao,
+            "images": [produto.imagem] if produto.imagem else [],
+            "seller": {
+                "name": produto.usuario.nome if produto.usuario else "Usuário Desconhecido",
+                "course": produto.usuario.curso if produto.usuario else "",
+                "semester": produto.usuario.semestre if produto.usuario else "",
+                "whatsapp": produto.usuario.telefone if produto.usuario else "",
+                "verifiedStudent": True
             },
-            "createdAt": "Hoje", 
-            "views": 12, 
-            "favoritesCount": 2, 
-            "tags": ["arduino", "cct"]
-        },
-        {
-            "id": "item-2",
-            "title": "Cálculo I - Stewart (Volume 1)",
-            "description": "Livro do Stewart, algumas marcações a lápis mas super conservado.",
-            "price": 0,
-            "isDonation": True,
-            "category": "Livros & Apostilas",
-            "condition": "Seminovo",
-            "location": "Biblioteca Central",
-            "images": ["https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=800&q=80"],
-            "seller": { 
-                "name": "Lucas", 
-                "course": "Engenharia", 
-                "semester": "Ativo", 
-                "whatsapp": "5585999999999", 
-                "verifiedStudent": True 
-            },
-            "createdAt": "Ontem", 
-            "views": 45, 
-            "favoritesCount": 5, 
-            "tags": ["calculo", "livro"]
-        }
-    ]
-    
-    return jsonify(items)
+            "createdAt": "Agora",
+            "views": 0,
+            "favoritesCount": 0,
+            "tags": []
+        })
+
+    return jsonify(lista)
+
+
+@products_bp.route("/", methods=["POST"])
+def cadastrar_produto():
+    dados = request.get_json()
+
+    # Prevenção extra caso venha sem imagens
+    imagem_url = None
+    if dados.get("images") and isinstance(dados["images"], list) and len(dados["images"]) > 0:
+        imagem_url = dados["images"][0]
+
+    # Usando .get() para evitar KeyErrors e definindo valores padrão onde faz sentido
+    novo = Produto(
+        titulo=dados.get("title", "Sem Título"),
+        descricao=dados.get("description", ""),
+        preco=float(dados.get("price", 0.0)), # Garante que seja float
+        categoria=dados.get("category", "Outros"),
+        condicao=dados.get("condition", "Usado"),
+        localizacao=dados.get("location", "Não informado"),
+        imagem=imagem_url,
+        is_doacao=dados.get("isDonation", False),
+        usuario_id=dados.get("usuario_id") # Cuidado aqui se não estiver logado!
+    )
+
+    db.session.add(novo)
+    db.session.commit()
+
+    return jsonify({
+        "mensagem": "Produto cadastrado com sucesso.",
+        "id": str(novo.id) # Retornando como string também
+    }), 201
