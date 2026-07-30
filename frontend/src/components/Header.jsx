@@ -30,12 +30,7 @@ export const Header = ({
             <span className="flex items-center gap-1">
               <CheckCircle2 className="w-3.5 h-3.5 text-[#10B981]" /> 100% Gratuito entre Alunos
             </span>
-            <button 
-              onClick={onOpenPaletteModal}
-              className="text-[#F79EB1] hover:underline flex items-center gap-1 font-semibold ml-2"
-            >
-              <Sparkles className="w-3.5 h-3.5" /> Ver Paleta & Design Specs
-            </button>
+
           </div>
         </div>
       </div>
@@ -51,7 +46,7 @@ export const Header = ({
               alt="Logo UniDesapego" 
               className="w-10 h-10 object-contain flex-shrink-0 drop-shadow-sm"
             />
-            
+
             
             <div>
               <div className="flex items-center space-x-2">
@@ -91,7 +86,6 @@ export const Header = ({
           </div>
 
           {/* Right Action Buttons */}
-          {/* AQUI ESTÁ A SEGUNDA MUDANÇA: flex-wrap e gap-2 adicionados */}
           <div className="flex flex-wrap items-center justify-end gap-2 sm:gap-3">
             
             {/* Donations Filter Toggle */}

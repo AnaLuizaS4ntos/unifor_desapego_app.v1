@@ -72,7 +72,7 @@ export const PaletteShowcaseModal = ({ isOpen, onClose }) => {
         </div>
 
         <p className="text-xs text-gray-600 mb-5 leading-relaxed bg-[#F8F7FA] p-3.5 rounded-2xl border border-[#AE8FBA]/20">
-          Baseado na imagem enviada, combinamos o <strong>Creme, Rosa, Lilás, Azul Pátina e Índigo Profundo</strong> com um toque de <strong>Verde Esmeralda (#10B981)</strong> para indicar instantaneamente itens de <strong>Doação Grátis</strong> e conexões diretas via WhatsApp!
+          <strong>Creme, Rosa, Lilás, Azul Pátina e Índigo Profundo</strong> 
         </p>
 
         {/* Color Palette List */}

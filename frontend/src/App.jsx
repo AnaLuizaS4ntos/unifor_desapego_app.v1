@@ -403,7 +403,7 @@ const handleAddItem = async (newItem) => {
             Desenvolvido para alunos de todo o campus
           </p>
           <div className="flex items-center justify-center space-x-4 text-[11px] text-[#4C5E91] font-semibold">
-            <button onClick={() => setIsPaletteModalOpen(true)} className="hover:underline">Paleta de Cores Hex</button>
+            <button onClick={() => setIsPaletteModalOpen(true)} className="hover:underline">Paleta de Cores UniDesapego</button>
             <span>•</span>
             <button onClick={handleResetFilters} className="hover:underline">Ver Todos os Itens</button>
             <span>•</span>
