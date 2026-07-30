@@ -9,6 +9,9 @@ from app.routes.auth import auth_bp
 
 app = Flask(__name__)
 
+# DESATIVA A CHATICE DA BARRA FINAL
+app.url_map.strict_slashes = False 
+
 CORS(app)
 
 # 1. Pega a URL (do Render ou do seu PC)
