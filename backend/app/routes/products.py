@@ -4,15 +4,15 @@ from app.models.produto import Produto
 
 products_bp = Blueprint("products", __name__)
 
-
-@products_bp.route("/", methods=["GET"])
+# AQUI ESTÁ A MÁGICA: strict_slashes=False direto na rota!
+@products_bp.route("/", methods=["GET"], strict_slashes=False)
 def listar_produtos():
     produtos = Produto.query.all()
     lista = []
 
     for produto in produtos:
         lista.append({
-            "id": str(produto.id), # <-- CORREÇÃO AQUI
+            "id": str(produto.id),
             "title": produto.titulo,
             "description": produto.descricao,
             "price": produto.preco,
@@ -36,27 +36,25 @@ def listar_produtos():
 
     return jsonify(lista)
 
-
-@products_bp.route("/", methods=["POST"])
+# AQUI TAMBÉM: strict_slashes=False no POST!
+@products_bp.route("/", methods=["POST"], strict_slashes=False)
 def cadastrar_produto():
     dados = request.get_json()
 
-    # Prevenção extra caso venha sem imagens
     imagem_url = None
     if dados.get("images") and isinstance(dados["images"], list) and len(dados["images"]) > 0:
         imagem_url = dados["images"][0]
 
-    # Usando .get() para evitar KeyErrors e definindo valores padrão onde faz sentido
     novo = Produto(
         titulo=dados.get("title", "Sem Título"),
         descricao=dados.get("description", ""),
-        preco=float(dados.get("price", 0.0)), # Garante que seja float
+        preco=float(dados.get("price", 0.0)),
         categoria=dados.get("category", "Outros"),
         condicao=dados.get("condition", "Usado"),
         localizacao=dados.get("location", "Não informado"),
         imagem=imagem_url,
         is_doacao=dados.get("isDonation", False),
-        usuario_id=dados.get("usuario_id") # Cuidado aqui se não estiver logado!
+        usuario_id=dados.get("usuario_id")
     )
 
     db.session.add(novo)
@@ -64,5 +62,5 @@ def cadastrar_produto():
 
     return jsonify({
         "mensagem": "Produto cadastrado com sucesso.",
-        "id": str(novo.id) # Retornando como string também
+        "id": str(novo.id)
     }), 201
