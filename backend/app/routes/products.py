@@ -46,6 +46,18 @@ def cadastrar_produto():
     if dados.get("images") and isinstance(dados["images"], list) and len(dados["images"]) > 0:
         imagem_url = dados["images"][0]
 
+    # Tratamento seguro para converter o ID do usuário em número inteiro
+    raw_user_id = dados.get("usuario_id")
+    usuario_id_int = 1 # Valor padrão caso venha vazio
+    
+    if raw_user_id is not None:
+        try:
+            # Se vier no formato "user-123", remove o prefixo e converte para int
+            clean_id = str(raw_user_id).replace("user-", "")
+            usuario_id_int = int(clean_id)
+        except ValueError:
+            usuario_id_int = 1
+
     novo = Produto(
         titulo=dados.get("title", "Sem Título"),
         descricao=dados.get("description", ""),
@@ -55,7 +67,7 @@ def cadastrar_produto():
         localizacao=dados.get("location", "Não informado"),
         imagem=imagem_url,
         is_doacao=dados.get("isDonation", False),
-        usuario_id=dados.get("usuario_id")
+        usuario_id=usuario_id_int
     )
 
     db.session.add(novo)
