@@ -247,61 +247,7 @@ export const NewItemModal = ({
                   {preset.label}
                 </button>
               ))}
-            </div>
-
-            {/* Optimized button with resizing and compression to prevent database errors. */}
-            <div className="flex items-center justify-between pt-1">
-              <label className="cursor-pointer text-xs bg-purple-50 text-[#473469] font-semibold px-3 py-1.5 rounded-lg hover:bg-purple-100 transition flex items-center gap-1.5 border border-purple-100">
-                📁 Ou enviar do celular
-                <input 
-                  type="file" 
-                  accept="image/*"
-                  className="hidden"
-                  onChange={(e) => {
-                    const file = e.target.files[0];
-                    if (!file) return;
-
-                    const reader = new FileReader();
-                    reader.onload = (event) => {
-                      const img = new Image();
-                      img.onload = () => {
-                        const canvas = document.createElement('canvas');
-                        const MAX_WIDTH = 800;
-                        const MAX_HEIGHT = 800;
-                        let width = img.width;
-                        let height = img.height;
-
-                        if (width > height) {
-                          if (width > MAX_WIDTH) {
-                            height *= MAX_WIDTH / width;
-                            width = MAX_WIDTH;
-                          }
-                        } else {
-                          if (height > MAX_HEIGHT) {
-                            width *= MAX_HEIGHT / height;
-                            height = MAX_HEIGHT;
-                          }
-                        }
-
-                        canvas.width = width;
-                        canvas.height = height;
-                        const ctx = canvas.getContext('2d');
-                        ctx.drawImage(img, 0, 0, width, height);
-
-                        // Comprime para JPEG otimizado (70% de qualidade)
-                        const compressedBase64 = canvas.toDataURL('image/jpeg', 0.7);
-                        setImageUrl(compressedBase64);
-                      };
-                      img.src = event.target.result;
-                    };
-                    reader.readAsDataURL(file);
-                  }}
-                />
-              </label>
-              {imageUrl && imageUrl.startsWith('data:image') && (
-                <span className="text-[11px] text-[#10B981] font-semibold">✓ Foto otimizada e carregada!</span>
-              )}
-            </div>
+            </div>  
           </div>
 
           {/* Seller details */}
