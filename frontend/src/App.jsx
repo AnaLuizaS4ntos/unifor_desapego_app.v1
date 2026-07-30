@@ -49,7 +49,7 @@ export default function App() {
     localStorage.setItem('unifor_marketplace_favs', JSON.stringify(favoriteIds));
   }, [favoriteIds]);
 
-  // Integracion with a Backend, my axios
+  // Integration with a Backend, my axios
   useEffect(() => {
     const fetchAPI = async () => {
       try {
@@ -126,7 +126,7 @@ export default function App() {
     });
   };
 
-const handleAddItem = async (newItem) => {
+  const handleAddItem = async (newItem) => {
     try {
       // 1.Security check: ensures a user is logged in.
       if (!currentUser) {
@@ -172,6 +172,17 @@ const handleAddItem = async (newItem) => {
     } catch (error) {
       console.error("Erro ao salvar produto:", error);
       showToast("Erro ao publicar o anúncio. Verifique se o backend está rodando!");
+    }
+  };
+
+  // Function to delete an item (Delete own listing)
+  const handleDeleteItem = async (itemId) => {
+    try {
+      setItems(prev => prev.filter(item => item.id !== itemId));
+      showToast('Anúncio excluído com sucesso.');
+    } catch (error) {
+      console.error("Erro ao excluir item:", error);
+      showToast("Erro ao excluir o anúncio.");
     }
   };
 
@@ -349,9 +360,11 @@ const handleAddItem = async (newItem) => {
 
       <ItemDetailModal
         item={quickViewItem} onClose={() => setQuickViewItem(null)}
+        currentUser={currentUser}
         isFavorite={quickViewItem ? favoriteIds.includes(quickViewItem.id) : false}
         onToggleFavorite={handleToggleFavorite}
         onContactWhatsApp={handleContactWhatsApp}
+        onDeleteItem={handleDeleteItem}
       />
 
       <NewItemModal
