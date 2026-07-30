@@ -34,7 +34,8 @@ def register():
         telefone=dados.get("whatsapp")
     )
 
-    usuario.set_password(dados["senha"])
+    senha_usuario = dados.get("senha") or dados.get("password") or ""
+    usuario.set_password(senha_usuario)
 
     db.session.add(usuario)
     db.session.commit()
@@ -131,7 +132,8 @@ def editar_perfil(id):
     usuario.telefone = dados.get("whatsapp", usuario.telefone)
 
     if dados.get("senha"):
-        usuario.set_password(dados["senha"])
+        senha_usuario = dados.get("senha") or dados.get("password") or ""
+        usuario.set_password(senha_usuario)
 
     db.session.commit()
 
