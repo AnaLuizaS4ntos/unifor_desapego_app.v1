@@ -5,7 +5,7 @@ import tailwindcss from '@tailwindcss/vite'
 export default defineConfig({
   plugins: [
     react(),
-    tailwindcss(), // <-- É ele quem faz a mágica do visual acontecer!
+    tailwindcss(), //He’s the one who makes the visual magic happennnnnnn
   ],
   server: {
     proxy: {

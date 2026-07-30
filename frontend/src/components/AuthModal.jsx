@@ -38,7 +38,7 @@ export const AuthModal = ({
   const [email, setEmail] = useState('');
   const [matricula, setMatricula] = useState('');
   const [course, setCourse] = useState('Ciência da Computação');
-  const [semester, setSemester] = useState('5º Semestre');
+  const [semester, setSemester] = useState('');
   const [whatsapp, setWhatsapp] = useState('');
   const [password, setPassword] = useState('');
 
@@ -53,11 +53,10 @@ export const AuthModal = ({
       return;
     }
 
-    // TODO: Depois você pode conectar o login no backend também!
     const user = {
       id: `user-${Date.now()}`,
       name: loginEmail.includes('aluno') ? 'Aluno UNIFOR' : loginEmail.split('@')[0],
-      email: loginEmail.includes('@') ? loginEmail : `${loginEmail}@unifor.br`,
+      email: loginEmail.includes('@') ? loginEmail : `${loginEmail}@edu.unifor.br`,
       matricula: '2110982',
       course: 'Ciência da Computação',
       semester: '6º Semestre',
@@ -79,7 +78,7 @@ export const AuthModal = ({
     }
 
     try {
-      // Fazendo a requisição real para o seu backend em Python (Flask)
+      // A real requisitation for the backend on Python
       const response = await fetch("https://uni-desapego-d2od.onrender.com/api/auth/register", {
         method: 'POST',
         headers: {
@@ -92,19 +91,19 @@ export const AuthModal = ({
           course: course,
           semester: semester,
           whatsapp: whatsapp.replace(/\D/g, ''),
-          password: password // A senha que estava faltando!
+          password: password 
         }),
       });
 
       const data = await response.json();
 
       if (!response.ok) {
-        // Se o Flask devolver algum erro (ex: email já existe)
+        // if dont email in flask 
         setErrorMessage(data.erro || 'Erro ao realizar cadastro.');
         return;
       }
 
-      // Se deu sucesso, monta o usuário com os dados que voltaram do banco
+      // Real user
       const isUniforEmail = email.toLowerCase().includes('unifor') || email.toLowerCase().includes('.br');
       
       const newUser = {
@@ -127,7 +126,8 @@ export const AuthModal = ({
       setErrorMessage('Erro de conexão com o servidor. O backend está rodando?');
     }
   };
-
+  
+  // Demouser for tests
   const handleDemoLogin = () => {
     const demoUser = {
       id: 'demo-computacao',
@@ -170,7 +170,7 @@ export const AuthModal = ({
             Comunidade exclusiva de desapego e doações da UNIFOR
           </p>
 
-          {/* Mode Switcher Tabs */}
+          {/* Mode switcher tabs */}
           {!currentUser && (
             <div className="flex bg-[#352552] p-1 rounded-2xl mt-4 border border-[#AE8FBA]/30">
               <button
@@ -193,10 +193,10 @@ export const AuthModal = ({
           )}
         </div>
 
-        {/* Modal Body */}
+        {/* Modal body */}
         <div className="p-6">
           
-          {/* Usuário Logado */}
+          {/* User loggad in */}
           {currentUser ? (
             <div className="text-center space-y-4">
               <div className="relative inline-block">
@@ -242,7 +242,7 @@ export const AuthModal = ({
               </div>
             </div>
           ) : mode === 'login' ? (
-            /* Login Form */
+            /* Login form */
             <form onSubmit={handleLoginSubmit} className="space-y-3.5">
               {errorMessage && (
                 <div className="bg-red-50 text-red-600 text-xs p-2.5 rounded-xl border border-red-200 font-medium">
@@ -259,7 +259,7 @@ export const AuthModal = ({
                   <input
                     type="text"
                     required
-                    placeholder="ex: aluno@unifor.br ou 2110492"
+                    placeholder="ex: aluno@edu.unifor.br ou 2110492"
                     value={loginEmail}
                     onChange={(e) => setLoginEmail(e.target.value)}
                     className="w-full pl-9 pr-3 py-2 rounded-xl bg-gray-50 border border-gray-200 text-xs focus:outline-none focus:ring-2 focus:ring-[#473469]"
@@ -305,7 +305,7 @@ export const AuthModal = ({
               </button>
             </form>
           ) : (
-            /* Register Form */
+            /* Register form */
             <form onSubmit={handleRegisterSubmit} className="space-y-3">
               {errorMessage && (
                 <div className="bg-red-50 text-red-600 text-xs p-2.5 rounded-xl border border-red-200 font-medium">
@@ -313,7 +313,7 @@ export const AuthModal = ({
                 </div>
               )}
 
-              {/* Nome */}
+              {/* Name */}
               <div>
                 <label className="block text-xs font-bold text-[#473469] uppercase mb-1">
                   Nome Completo *
@@ -331,7 +331,7 @@ export const AuthModal = ({
                 </div>
               </div>
 
-              {/* Email & Matricula */}
+              {/* Email and registration */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 <div>
                   <label className="block text-[11px] font-bold text-[#473469] uppercase mb-1">
@@ -362,7 +362,7 @@ export const AuthModal = ({
                 </div>
               </div>
 
-              {/* Course & Semester */}
+              {/* Course and semester */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 <div>
                   <label className="block text-[11px] font-bold text-[#473469] uppercase mb-1">
@@ -420,7 +420,7 @@ export const AuthModal = ({
                 </div>
               </div>
 
-              {/* Senha (INCLUÍDO) */}
+              {/* Password */}
               <div>
                 <label className="block text-[11px] font-bold text-[#473469] uppercase mb-1">
                   Senha *

@@ -4,6 +4,9 @@ from app.models.produto import Produto
 
 products_bp = Blueprint("products", __name__)
 
+# O ideal para aceitar o Base64 sem crashar o banco:
+imagem = db.Column(db.Text, nullable=True)
+
 # AQUI ESTÁ A MÁGICA: strict_slashes=False direto na rota!
 @products_bp.route("", methods=["GET"], strict_slashes=False)
 def listar_produtos():

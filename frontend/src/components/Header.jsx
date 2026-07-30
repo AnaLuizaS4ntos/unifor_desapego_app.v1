@@ -23,7 +23,7 @@ export const Header = ({
         <div className="flex items-center space-x-2 max-w-7xl mx-auto w-full justify-between">
           <div className="flex items-center space-x-2 overflow-hidden text-ellipsis whitespace-nowrap">
             <span className="inline-block w-2 h-2 rounded-full bg-[#10B981] animate-pulse"></span>
-            <span>UNIFOR Desapego • Feito por alunos de Ciência da Computação para a comunidade campus</span>
+            <span>UNI Desapego • Feito por alunos de Tecnologia para a comunidade campus</span>
           </div>
           <div className="hidden sm:flex items-center space-x-3 text-xs opacity-90">
             <span className="flex items-center gap-1">
@@ -36,7 +36,7 @@ export const Header = ({
 
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5">
-        {/* AQUI ESTÁ A PRIMEIRA MUDANÇA: flex-wrap e w-full adicionados */}
+        {/* flex-wrap e w-full add */}
         <div className="flex flex-wrap items-center justify-between gap-y-3 gap-x-2 w-full">
           
           <div className="flex items-center space-x-3">
@@ -62,7 +62,7 @@ export const Header = ({
             </div>
           </div>
 
-          {/* Desktop Search Bar */}
+          {/* Desktop search bar */}
           <div className="hidden md:flex flex-1 max-w-md mx-4 relative">
             <div className="relative w-full">
               <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#AE8FBA]" />
@@ -84,10 +84,10 @@ export const Header = ({
             </div>
           </div>
 
-          {/* Right Action Buttons */}
+          {/* Right action buttons */}
           <div className="flex flex-wrap items-center justify-end gap-2 sm:gap-3">
             
-            {/* Donations Filter Toggle */}
+            {/* Donations filter toggle */}
             <button
               onClick={() => {
                 setOnlyDonations(!onlyDonations);
@@ -106,7 +106,7 @@ export const Header = ({
               </span>
             </button>
 
-            {/* Favorites Toggle Button */}
+            {/* Favorites toggle button */}
             <button
               onClick={() => {
                 setOnlyFavorites(!onlyFavorites);
@@ -119,7 +119,7 @@ export const Header = ({
               }`}
             >
               <Heart className={`w-3.5 h-3.5 ${onlyFavorites ? 'fill-[#473469]' : 'text-[#F79EB1]'}`} />
-              <span className="hidden sm:inline">Salvos</span>
+              <span>Salvos</span>
               {favoritesCount > 0 && (
                 <span className="bg-[#473469] text-[#F79EB1] text-[10px] px-1.5 py-0.2 rounded-full font-bold">
                   {favoritesCount}
@@ -127,7 +127,7 @@ export const Header = ({
               )}
             </button>
 
-            {/* ----- ÁREA DO USUÁRIO ----- */}
+            {/* USER AREA */}
             <div className="flex items-center space-x-4">
               {currentUser ? (
                 <button 
@@ -149,25 +149,25 @@ export const Header = ({
                   className="flex items-center space-x-1.5 text-[#AE8FBA] hover:text-[#F2E7D2] transition font-bold text-xs"
                 >
                   <User className="w-5 h-5" />
-                  <span className="hidden sm:block">Entrar</span>
+                  <span>Entrar</span>
                 </button>
               )}
             </div>
 
-            {/* Desapegar / Post New Item Button */}
+            {/* Desapegar/post new item Button */}
             <button
               onClick={onOpenNewItemModal}
               className="flex items-center space-x-2 bg-gradient-to-r from-[#10B981] to-[#059669] hover:from-[#059669] hover:to-[#047857] text-white text-xs sm:text-sm font-bold px-3.5 sm:px-4 py-2 rounded-full shadow-md hover:shadow-lg transition transform active:scale-95"
             >
               <PlusCircle className="w-4 h-4" />
-              {/* AQUI ESTÁ A TERCEIRA MUDANÇA: O texto se esconde no mobile */}
+              {/* The text is invisible on mobile */}
               <span className="hidden sm:inline">Desapegar +</span>
             </button>
 
           </div>
         </div>
 
-        {/* Mobile Search Input (Visible on mobile) */}
+        {/* Mobile search input (Visible on mobile) */}
         <div className="mt-3 md:hidden">
           <div className="relative w-full">
             <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#AE8FBA]" />

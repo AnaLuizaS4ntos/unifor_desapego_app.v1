@@ -9,22 +9,22 @@ from app.routes.auth import auth_bp
 
 app = Flask(__name__)
 
-# DESATIVA A CHATICE DA BARRA FINAL
+# DISABLES READING OF THE FINAL BAR
 app.url_map.strict_slashes = False 
 
 CORS(app)
 
-# 1. Pega a URL (do Render ou do seu PC)
+# 1. Grab the URL
 minha_url_db = os.getenv(
     "DATABASE_URL", 
     "postgresql://postgres:eudeybanana@localhost:5432/unidesapego"
 )
 
-# 2. Arruma o bug do Render caso ele mande 'postgres://' no lugar de 'postgresql://'
+### Fixes the Render bug where it sends 'postgres://' instead of 'postgresql://'(for not bugs)
 if minha_url_db.startswith("postgres://"):
     minha_url_db = minha_url_db.replace("postgres://", "postgresql://", 1)
 
-# 3. Salva na configuração do Flask
+### Saves to the Flask configuration
 app.config["SQLALCHEMY_DATABASE_URI"] = minha_url_db
 
 db.init_app(app)
@@ -32,8 +32,6 @@ db.init_app(app)
 app.register_blueprint(products_bp, url_prefix="/api/products")
 app.register_blueprint(auth_bp, url_prefix="/api/auth")
 
-# IMPORTANTE: Importe seus models aqui para o SQLAlchemy "enxergar" as tabelas!
-# Ajuste os nomes conforme os arquivos reais que você tem dentro de app/models
 from app.models import usuarios, produto
 
 with app.app_context():

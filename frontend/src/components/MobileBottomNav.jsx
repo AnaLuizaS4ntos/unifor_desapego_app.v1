@@ -39,7 +39,7 @@ export const MobileBottomNav = ({
           )}
         </button>
 
-        {/* Main Post Action */}
+        {/* Main post action */}
         <button
           onClick={onOpenNewItemModal}
           className="flex flex-col items-center justify-center -mt-5"
@@ -66,7 +66,7 @@ export const MobileBottomNav = ({
           )}
         </button>
 
-        {/* Palette Info */}
+        {/* Palette info */}
         <button
           onClick={onOpenPaletteModal}
           className="flex flex-col items-center justify-center p-1 text-[#AE8FBA] hover:text-white transition"

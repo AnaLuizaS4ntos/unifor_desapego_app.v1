@@ -59,10 +59,10 @@ export const ItemListItem = ({
         </div>
       </div>
 
-      {/* Right Price & Actions */}
+      {/* Right price and actions */}
       <div className="flex items-center justify-between sm:justify-end space-x-3 w-full sm:w-auto pt-2 sm:pt-0 border-t sm:border-t-0 border-gray-100">
         
-        {/* Price Tag */}
+        {/* Price tag */}
         <div className="text-left sm:text-right">
           {item.isDonation ? (
             <span className="text-sm font-black text-[#10B981] bg-[#ECFDF5] px-3 py-1 rounded-full border border-[#10B981]/30 inline-block">
@@ -75,7 +75,7 @@ export const ItemListItem = ({
           )}
         </div>
 
-        {/* Action Buttons */}
+        {/* Action buttons */}
         <div className="flex items-center space-x-1.5">
           <button
             onClick={() => onToggleFavorite(item.id)}

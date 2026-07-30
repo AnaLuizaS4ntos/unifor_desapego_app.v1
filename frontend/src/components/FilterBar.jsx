@@ -28,7 +28,7 @@ export const FilterBar = ({
     <div className="bg-[#F8F7FA] border-b border-[#AE8FBA]/20 py-3 px-4">
       <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
         
-        {/* Count Indicator */}
+        {/* Count indicator */}
         <div className="flex items-center space-x-2 text-[#473469] font-bold">
           <span className="bg-[#473469] text-[#F2E7D2] px-2.5 py-0.5 rounded-full text-[11px]">
             {totalFilteredCount} {totalFilteredCount === 1 ? 'item encontrado' : 'itens encontrados'}
@@ -43,10 +43,10 @@ export const FilterBar = ({
           )}
         </div>
 
-        {/* Filters Group */}
+        {/* Filters group */}
         <div className="flex flex-wrap items-center gap-2.5 w-full sm:w-auto justify-between sm:justify-end">
           
-          {/* Campus Bloco Selector */}
+          {/* Campus bloco selector */}
           <div className="flex items-center space-x-1.5 bg-white border border-[#AE8FBA]/30 px-2.5 py-1.5 rounded-xl shadow-2xs">
             <MapPin className="w-3.5 h-3.5 text-[#F79EB1]" />
             <select
@@ -61,7 +61,7 @@ export const FilterBar = ({
             </select>
           </div>
 
-          {/* Condition Selector */}
+          {/* Condition selector */}
           <div className="flex items-center space-x-1.5 bg-white border border-[#AE8FBA]/30 px-2.5 py-1.5 rounded-xl shadow-2xs">
             <Filter className="w-3.5 h-3.5 text-[#4C5E91]" />
             <select
@@ -77,7 +77,7 @@ export const FilterBar = ({
             </select>
           </div>
 
-          {/* Sort By Selector */}
+          {/* Sort by selector */}
           <div className="flex items-center space-x-1.5 bg-white border border-[#AE8FBA]/30 px-2.5 py-1.5 rounded-xl shadow-2xs">
             <ArrowUpDown className="w-3.5 h-3.5 text-[#473469]" />
             <select
@@ -92,7 +92,7 @@ export const FilterBar = ({
             </select>
           </div>
 
-          {/* View Mode Toggle (Grid vs List) */}
+          {/* View mode toggle (grid vs list) */}
           <div className="flex items-center bg-white border border-[#AE8FBA]/30 p-1 rounded-xl shadow-2xs">
             <button
               onClick={() => setViewMode('grid')}

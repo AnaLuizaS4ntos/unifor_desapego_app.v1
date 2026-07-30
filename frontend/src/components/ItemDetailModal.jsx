@@ -10,24 +10,25 @@ import {
   UserCheck, 
   Check, 
   ShieldCheck, 
-  Building2 
+  Building2,
+  Trash2
 } from 'lucide-react';
 
 
 export const ItemDetailModal = ({
   item,
+  currentUser,
   onClose,
   isFavorite,
   onToggleFavorite,
-  onContactWhatsApp
+  onContactWhatsApp,
+  onDeleteItem
 }) => {
-  if (!item) return null;
-
-// eslint-disable-next-line react-hooks/rules-of-hooks
+  
   const [activeImageIndex, setActiveImageIndex] = useState(0);
-
-  // eslint-disable-next-line react-hooks/rules-of-hooks
   const [copiedLink, setCopiedLink] = useState(false);
+
+  if (!item) return null;
 
   const handleShare = () => {
     navigator.clipboard.writeText(window.location.href);
@@ -35,13 +36,16 @@ export const ItemDetailModal = ({
     setTimeout(() => setCopiedLink(false), 2500);
   };
 
+  //Checks if the current user is the owner of the ad
+  const isMyItem = currentUser && item.seller && item.seller.name === currentUser.name;
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-fadeIn overflow-y-auto">
       <div 
         className="bg-white rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-[#AE8FBA]/30 relative animate-scaleUp my-8"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Close Button */}
+        {/* Close button */}
         <button
           onClick={onClose}
           className="absolute top-4 right-4 z-20 bg-white/90 hover:bg-white text-[#473469] p-2 rounded-full shadow-md transition"
@@ -49,7 +53,7 @@ export const ItemDetailModal = ({
           <X className="w-5 h-5" />
         </button>
 
-        {/* Main Image Banner */}
+        {/* Main image banner */}
         <div className="relative aspect-[16/10] bg-[#473469] w-full overflow-hidden rounded-t-3xl">
           <img
             src={item.images[activeImageIndex] || item.images[0]}
@@ -57,7 +61,7 @@ export const ItemDetailModal = ({
             className="w-full h-full object-cover"
           />
 
-          {/* Badges on Image */}
+          {/* Badges on image */}
           <div className="absolute top-4 left-4 flex flex-wrap gap-2">
             {item.isDonation ? (
               <span className="bg-[#10B981] text-white text-xs font-black px-3 py-1 rounded-full shadow-md flex items-center space-x-1">
@@ -66,7 +70,7 @@ export const ItemDetailModal = ({
               </span>
             ) : (
               <span className="bg-[#473469] text-[#F2E7D2] text-sm font-black px-3.5 py-1 rounded-full shadow-md border border-[#AE8FBA]/40">
-                R$ {item.price.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                R$ {Number(item.price || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
               </span>
             )}
 
@@ -75,8 +79,8 @@ export const ItemDetailModal = ({
             </span>
           </div>
 
-          {/* Multiple Image Thumbnails */}
-          {item.images.length > 1 && (
+          {/* Multiple image thumbnails */}
+          {item.images && item.images.length > 1 && (
             <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex space-x-2 bg-black/40 p-1.5 rounded-full backdrop-blur-md">
               {item.images.map((img, idx) => (
                 <button
@@ -93,10 +97,10 @@ export const ItemDetailModal = ({
           )}
         </div>
 
-        {/* Content Body */}
+        {/* Content body */}
         <div className="p-6">
           
-          {/* Header & Title */}
+          {/* Header and title */}
           <div className="flex items-start justify-between gap-4 mb-3">
             <div>
               <div className="flex items-center space-x-2 text-xs font-semibold text-[#4C5E91] mb-1">
@@ -134,7 +138,7 @@ export const ItemDetailModal = ({
             </div>
           </div>
 
-          {/* Location Banner in UNIFOR */}
+          {/* Location banner in UNIFOR */}
           <div className="bg-[#F8F7FA] border border-[#AE8FBA]/30 rounded-2xl p-3.5 mb-5 flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <div className="w-9 h-9 rounded-xl bg-[#4C5E91]/15 text-[#473469] flex items-center justify-center">
@@ -174,7 +178,7 @@ export const ItemDetailModal = ({
             </div>
           )}
 
-          {/* Seller Card */}
+          {/* Seller card */}
           <div className="bg-[#473469] text-white p-4 rounded-2xl mb-6 shadow-md">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3">
@@ -207,18 +211,37 @@ export const ItemDetailModal = ({
             </div>
           </div>
 
-          {/* Action CTA Button */}
-          <button
-            onClick={() => onContactWhatsApp(item)}
-            className="w-full flex items-center justify-center space-x-2 py-3.5 px-6 bg-[#10B981] hover:bg-[#059669] text-white font-extrabold text-base rounded-2xl shadow-lg transition transform active:scale-98"
-          >
-            <MessageCircle className="w-5 h-5 fill-white/20" />
-            <span>Chamar no WhatsApp para Combinar Entrega</span>
-          </button>
-          
-          <p className="text-[11px] text-center text-gray-500 mt-2">
-            O botão abrirá o WhatsApp com uma mensagem personalizada sobre este item.
-          </p>
+          {/* Action CTA button: Conditional based on whether the item belongs to you or someone else */}
+          {isMyItem ? (
+            <div>
+              <button
+                onClick={() => {
+                  if (onDeleteItem) onDeleteItem(item.id);
+                  onClose();
+                }}
+                className="w-full flex items-center justify-center space-x-2 py-3.5 px-6 bg-red-500 hover:bg-red-600 text-white font-extrabold text-base rounded-2xl shadow-lg transition transform active:scale-98"
+              >
+                <Trash2 className="w-5 h-5" />
+                <span>Excluir meu anúncio</span>
+              </button>
+              <p className="text-[11px] text-center text-gray-500 mt-2">
+                Como este anúncio é seu, você pode removê-lo a qualquer momento.
+              </p>
+            </div>
+          ) : (
+            <div>
+              <button
+                onClick={() => onContactWhatsApp(item)}
+                className="w-full flex items-center justify-center space-x-2 py-3.5 px-6 bg-[#10B981] hover:bg-[#059669] text-white font-extrabold text-base rounded-2xl shadow-lg transition transform active:scale-98"
+              >
+                <MessageCircle className="w-5 h-5 fill-white/20" />
+                <span>Chamar no WhatsApp para Combinar Entrega</span>
+              </button>
+              <p className="text-[11px] text-center text-gray-500 mt-2">
+                O botão abrirá o WhatsApp com uma mensagem personalizada sobre este item.
+              </p>
+            </div>
+          )}
 
         </div>
       </div>

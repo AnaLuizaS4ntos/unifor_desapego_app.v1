@@ -15,8 +15,7 @@ export const NewItemModal = ({
   onClose,
   onAddItem
 }) => {
-  if (!isOpen) return null;
-
+  
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState('');
@@ -28,6 +27,8 @@ export const NewItemModal = ({
   const [sellerName, setSellerName] = useState('Estudante UNIFOR');
   const [sellerCourse, setSellerCourse] = useState('Ciência da Computação');
   const [sellerWhatsapp, setSellerWhatsapp] = useState('5585999887766');
+
+  if (!isOpen) return null;
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -91,7 +92,7 @@ export const NewItemModal = ({
         {/* Form */}
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
 
-          {/* Donation Toggle Banner */}
+          {/* Donation toggle banner */}
           <div 
             onClick={() => {
               setIsDonation(!isDonation);
@@ -117,7 +118,7 @@ export const NewItemModal = ({
             </div>
           </div>
 
-          {/* Item Title */}
+          {/* Item title */}
           <div>
             <label className="block text-xs font-bold text-[#473469] uppercase mb-1">
               Título do Anúncio *
@@ -132,7 +133,7 @@ export const NewItemModal = ({
             />
           </div>
 
-          {/* Category & Condition */}
+          {/* Category and condition */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label className="block text-xs font-bold text-[#473469] uppercase mb-1">
@@ -147,7 +148,7 @@ export const NewItemModal = ({
                 <option value="Eletrônicos & Hardware">Eletrônicos & Hardware</option>
                 <option value="Livros & Apostilas">Livros & Apostilas</option>
                 <option value="Saúde & Jalecos">Saúde & Jalecos</option>
-                <option value="Móveis & Kitnet">Móveis & Kitnet</option>
+                <option value="Móveis">Móveis</option>
                 <option value="Jogos & Lazer">Jogos & Lazer</option>
                 <option value="Outros">Outros</option>
                 <option value="Doação">Doação</option>
@@ -171,7 +172,7 @@ export const NewItemModal = ({
             </div>
           </div>
 
-          {/* Price & Bloco UNIFOR */}
+          {/* Price and bloco UNIFOR */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label className="block text-xs font-bold text-[#473469] uppercase mb-1">
@@ -222,7 +223,7 @@ export const NewItemModal = ({
             />
           </div>
 
-          {/* Image URL & Presets */}
+          {/* Image URL, presets and upload */}
           <div>
             <label className="block text-xs font-bold text-[#473469] uppercase mb-1">
               URL da Imagem ou Escolha um Exemplo
@@ -234,7 +235,7 @@ export const NewItemModal = ({
               onChange={(e) => setImageUrl(e.target.value)}
               className="w-full px-3.5 py-2.5 rounded-xl bg-gray-50 border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#473469] mb-2"
             />
-            <div className="flex items-center space-x-1.5 overflow-x-auto no-scrollbar py-1">
+            <div className="flex items-center space-x-1.5 overflow-x-auto no-scrollbar py-1 mb-2">
               <span className="text-[10px] text-gray-500 font-semibold whitespace-nowrap">Modelos rápidos:</span>
               {PRESET_SAMPLE_PHOTOS.map((preset, idx) => (
                 <button
@@ -247,9 +248,34 @@ export const NewItemModal = ({
                 </button>
               ))}
             </div>
+
+            {/* Botão discreto de Upload do Celular */}
+            <div className="flex items-center justify-between pt-1">
+              <label className="cursor-pointer text-xs bg-purple-50 text-[#473469] font-semibold px-3 py-1.5 rounded-lg hover:bg-purple-100 transition flex items-center gap-1.5 border border-purple-100">
+                📁 Ou enviar do celular
+                <input 
+                  type="file" 
+                  accept="image/*"
+                  className="hidden"
+                  onChange={(e) => {
+                    const file = e.target.files[0];
+                    if (file) {
+                      const reader = new FileReader();
+                      reader.onloadend = () => {
+                        setImageUrl(reader.result);
+                      };
+                      reader.readAsDataURL(file);
+                    }
+                  }}
+                />
+              </label>
+              {imageUrl && imageUrl.startsWith('data:image') && (
+                <span className="text-[11px] text-[#10B981] font-semibold">✓ Foto carregada!</span>
+              )}
+            </div>
           </div>
 
-          {/* Seller Details */}
+          {/* Seller details */}
           <div className="pt-2 border-t border-gray-100">
             <p className="text-xs font-bold text-[#4C5E91] uppercase mb-2">Dados do Vendedor (Sua Identidade)</p>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
@@ -277,7 +303,7 @@ export const NewItemModal = ({
             </div>
           </div>
 
-          {/* Submit Button */}
+          {/* Submit button */}
           <div className="pt-3">
             <button
               type="submit"

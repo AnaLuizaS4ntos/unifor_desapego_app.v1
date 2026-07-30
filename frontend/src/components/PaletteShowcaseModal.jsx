@@ -67,7 +67,7 @@ export const PaletteShowcaseModal = ({ isOpen, onClose }) => {
           </div>
           <div>
             <h2 className="text-xl font-bold text-[#473469]">Paleta de Cores & Design Specs</h2>
-            <p className="text-xs text-[#AE8FBA]">Harmonização visual para a plataforma UniDesapego UNIFOR</p>
+            <p className="text-xs text-[#AE8FBA]">Harmonização visual da plataforma UniDesapego UNIFOR - por Ana Luíza Santos</p>
           </div>
         </div>
 
@@ -75,7 +75,7 @@ export const PaletteShowcaseModal = ({ isOpen, onClose }) => {
           <strong>Creme, Rosa, Lilás, Azul Pátina e Índigo Profundo</strong> 
         </p>
 
-        {/* Color Palette List */}
+        {/* Color palette list(i wanna show my idea of design for this site) */}
         <div className="space-y-2.5 mb-6">
           {COLOR_PALETTE.map((color) => (
             <div 
@@ -103,7 +103,7 @@ export const PaletteShowcaseModal = ({ isOpen, onClose }) => {
           ))}
         </div>
 
-        {/* Examples of usage in components */}
+        {/* Usage in components */}
         <div className="bg-[#473469] p-4 rounded-2xl text-white">
           <p className="text-xs font-bold text-[#F79EB1] uppercase tracking-wider mb-2">
             Exemplo Prático na Interface
