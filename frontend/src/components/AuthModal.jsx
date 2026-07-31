@@ -46,27 +46,52 @@ export const AuthModal = ({
 
   if (!isOpen) return null;
 
-  const handleLoginSubmit = (e) => {
+  const handleLoginSubmit = async (e) => {
     e.preventDefault();
-    if (!loginEmail.trim()) {
-      setErrorMessage('Por favor, informe seu e-mail ou matrícula.');
+    
+    if (!loginEmail.trim() || !loginPassword.trim()) {
+      setErrorMessage('Por favor, informe seu e-mail e senha.');
       return;
     }
 
-    const user = {
-      id: `user-${Date.now()}`,
-      name: loginEmail.includes('aluno') ? 'Aluno UNIFOR' : loginEmail.split('@')[0],
-      email: loginEmail.includes('@') ? loginEmail : `${loginEmail}@edu.unifor.br`,
-      matricula: '2110982',
-      course: 'Ciência da Computação',
-      semester: '6º Semestre',
-      whatsapp: '5585988776655',
-      avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80',
-      verifiedStudent: true
-    };
+    try {
+      const response = await fetch("https://uni-desapego-d2od.onrender.com/api/auth/login", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: loginEmail.trim(),
+          password: loginPassword 
+        }),
+      });
 
-    onLogin(user);
-    onClose();
+      const data = await response.json();
+
+      if (!response.ok) {
+        setErrorMessage(data.erro || 'E-mail ou senha incorretos.');
+        return;
+      }
+
+      const realUser = {
+        id: data.usuario?.id,
+        name: data.usuario?.name,
+        email: data.usuario?.email,
+        matricula: data.usuario?.matricula || '',
+        course: data.usuario?.course || '',
+        semester: data.usuario?.semester || '',
+        whatsapp: data.usuario?.whatsapp || '',
+        avatarUrl: `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(data.usuario?.name || 'user')}`,
+        verifiedStudent: true
+      };
+
+      onLogin(realUser);
+      onClose();
+
+    } catch (error) {
+      console.error("Erro na API de Login:", error);
+      setErrorMessage('Erro de conexão com o servidor. O backend está rodando?');
+    }
   };
 
   const handleRegisterSubmit = async (e) => {
