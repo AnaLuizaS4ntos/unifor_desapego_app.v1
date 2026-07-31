@@ -53,14 +53,13 @@ export default function App() {
   useEffect(() => {
     const fetchAPI = async () => {
       try {
+        const response = await axios.get("https://uni-desapego-d2od.onrender.com/api/products")
         
-        const response = await axios.get("https://uni-desapego-d2od.onrender.com/api/auth/register")
         setItems(response.data);
 
       } catch (error) {
-        
         console.error("Backend não encontrado, carregando dados de teste visuais...", error);
-        
+       
         setItems([
           {
             id: 'item-1',
