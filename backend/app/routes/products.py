@@ -46,15 +46,39 @@ def cadastrar_produto():
     if dados.get("images") and isinstance(dados["images"], list) and len(dados["images"]) > 0:
         imagem_url = dados["images"][0]
 
-    # Converte o usuario_id para número inteiro de forma segura para o PostgreSQL não rejeitar
+    # Tenta limpar e converter o ID enviado pelo frontend
     raw_user_id = dados.get("usuario_id")
-    usuario_id_int = 1  # ID padrão caso venha vazio ou inválido
-    if raw_user_id is not None:
+    usuario_id_int = None
+    
+    if raw_user_id:
         try:
-            clean_id = str(raw_user_id).replace("user-", "").strip()
-            usuario_id_int = int(clean_id)
+            usuario_id_int = int(str(raw_user_id).replace("user-", "").strip())
         except ValueError:
-            usuario_id_int = 1
+            pass
+
+    # Importa o modelo de usuário para validação no banco
+    from app.models.usuarios import Usuario
+
+    # Garante que o usuario_id realmente existe no PostgreSQL para não dar erro de chave estrangeira
+    usuario_valido = Usuario.query.get(usuario_id_int) if usuario_id_int else None
+    
+    if not usuario_valido:
+        # Se não achou, pega o primeiro usuário cadastrado no banco
+        primeiro_usuario = Usuario.query.first()
+        if primeiro_usuario:
+            usuario_id_int = primeiro_usuario.id
+        else:
+            # Se a tabela estiver vazia, cria um usuário padrão de segurança na hora
+            user_padrao = Usuario(
+                nome="Ana Luiza", 
+                email="analuizadossantos5@gmail.com", 
+                curso="Ciência da Computação",
+                semestre="6º Semestre",
+                telefone="85999887766"
+            )
+            db.session.add(user_padrao)
+            db.session.commit()
+            usuario_id_int = user_padrao.id
 
     novo = Produto(
         titulo=dados.get("title", "Sem Título"),
