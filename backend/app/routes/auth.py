@@ -53,12 +53,15 @@ def register():
 
 # LOGIN
 
+# LOGIN
+
 @auth_bp.route("/login", methods=["POST"], strict_slashes=False)
 def login():
     dados = request.get_json()
 
+    # Busca o usuário pelo email
     usuario = Usuario.query.filter_by(
-        email=dados["email"]
+        email=dados.get("email")
     ).first()
 
     if usuario is None:
@@ -66,20 +69,27 @@ def login():
             "erro": "Usuário não encontrado."
         }), 404
 
-    if not usuario.check_password(dados["senha"]):
+    # Pega a senha que o front enviou (seja "password" ou "senha")
+    senha_recebida = dados.get("password") or dados.get("senha")
+
+    # Verifica se a senha bate com a do banco
+    if not usuario.check_password(senha_recebida):
         return jsonify({
             "erro": "Senha incorreta."
         }), 401
 
+    # Se tudo deu certo, devolve os dados
     return jsonify({
-        "id": usuario.id,
-        "name": usuario.nome,
-        "email": usuario.email,
-        "course": usuario.curso,
-        "semester": usuario.semestre,
-        "whatsapp": usuario.telefone,
-        "verifiedStudent": True
-    })
+        "usuario": {
+            "id": usuario.id,
+            "name": usuario.nome,
+            "email": usuario.email,
+            "course": usuario.curso,
+            "semester": usuario.semestre,
+            "whatsapp": usuario.telefone,
+            "verifiedStudent": True
+        }
+    }), 200
 
 
 # PERFIL
