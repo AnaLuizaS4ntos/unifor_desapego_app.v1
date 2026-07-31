@@ -177,8 +177,13 @@ export default function App() {
   // Function to delete an item (Delete own listing)
   const handleDeleteItem = async (itemId) => {
     try {
+      await axios.delete(`https://uni-desapego-d2od.onrender.com/api/products/${itemId}`);
+
       setItems(prev => prev.filter(item => item.id !== itemId));
-      showToast('Anúncio excluído com sucesso.');
+      showToast('Anúncio excluído com sucesso! 🗑️');
+      
+      setQuickViewItem(null); 
+
     } catch (error) {
       console.error("Erro ao excluir item:", error);
       showToast("Erro ao excluir o anúncio.");

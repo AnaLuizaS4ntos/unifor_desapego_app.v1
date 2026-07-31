@@ -5,7 +5,8 @@ from app.models.produto import Produto
 products_bp = Blueprint("products", __name__)
 
 
-#strict_slashes=False
+# LISTAR PRODUTOS
+
 @products_bp.route("", methods=["GET"], strict_slashes=False)
 def listar_produtos():
     produtos = Produto.query.all()
@@ -37,7 +38,9 @@ def listar_produtos():
 
     return jsonify(lista)
 
-# strict_slashes=False no POST!
+
+# CADASTRAR PRODUTO
+
 @products_bp.route("", methods=["POST"], strict_slashes=False)
 def cadastrar_produto():
     dados = request.get_json()
@@ -46,7 +49,6 @@ def cadastrar_produto():
     if dados.get("images") and isinstance(dados["images"], list) and len(dados["images"]) > 0:
         imagem_url = dados["images"][0]
 
-    # Tenta limpar e converter o ID enviado pelo frontend
     raw_user_id = dados.get("usuario_id")
     usuario_id_int = None
     
@@ -56,19 +58,15 @@ def cadastrar_produto():
         except ValueError:
             pass
 
-    # Importa o modelo de usuário para validação no banco
     from app.models.usuarios import Usuario
 
-    # Garante que o usuario_id realmente existe no PostgreSQL para não dar erro de chave estrangeira
     usuario_valido = Usuario.query.get(usuario_id_int) if usuario_id_int else None
     
     if not usuario_valido:
-        # Se não achou, pega o primeiro usuário cadastrado no banco
         primeiro_usuario = Usuario.query.first()
         if primeiro_usuario:
             usuario_id_int = primeiro_usuario.id
         else:
-            # Se a tabela estiver vazia, cria um usuário padrão de segurança na hora
             user_padrao = Usuario(
                 nome="Ana Luiza", 
                 email="analuizadossantos5@gmail.com", 
@@ -99,3 +97,20 @@ def cadastrar_produto():
         "mensagem": "Produto cadastrado com sucesso.",
         "id": str(novo.id)
     }), 201
+
+# EXCLUIR PRODUTO 
+@products_bp.route("/<int:id>", methods=["DELETE"], strict_slashes=False)
+def excluir_produto(id):
+    produto = Produto.query.get(id)
+
+    if produto is None:
+        return jsonify({
+            "erro": "Produto não encontrado."
+        }), 404
+
+    db.session.delete(produto)
+    db.session.commit()
+
+    return jsonify({
+        "mensagem": "Produto removido com sucesso."
+    }), 200
