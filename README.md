@@ -73,6 +73,8 @@ Um dos maiores aprendizados técnicos nesta fase de deploy foi a gestão de inst
 
 [x] UI/UX e paleta institucional construídas com Tailwind.
 
+[x] Criação da logo do app no Figma.
+
 [x] Catálogo dinâmico com filtros e modais (React).
 
 [x] Configuração de PWA (manifest e Service Worker nativos).
