@@ -4,8 +4,8 @@ from app.models.usuarios import Usuario
 
 auth_bp = Blueprint("auth", __name__)
 
-# CADASTRAR USUÁRIO
-
+# ==================================================
+# REGISTER USER
 @auth_bp.route("/register", methods=["POST"], strict_slashes=False)
 def register():
     dados = request.get_json()
@@ -51,15 +51,13 @@ def register():
     }), 201
 
 
+# ==================================================
 # LOGIN
-
-# LOGIN
-
 @auth_bp.route("/login", methods=["POST"], strict_slashes=False)
 def login():
     dados = request.get_json()
 
-    # Busca o usuário pelo email
+    #Searches for the user by email
     usuario = Usuario.query.filter_by(
         email=dados.get("email")
     ).first()
@@ -69,16 +67,15 @@ def login():
             "erro": "Usuário não encontrado."
         }), 404
 
-    # Pega a senha que o front enviou (seja "password" ou "senha")
+    # Take the password sent by the frontend (whether it's "password" or "senha")
     senha_recebida = dados.get("password") or dados.get("senha")
 
-    # Verifica se a senha bate com a do banco
+    #Checks if the password matches the one in the database.
     if not usuario.check_password(senha_recebida):
         return jsonify({
             "erro": "Senha incorreta."
         }), 401
 
-    # Se tudo deu certo, devolve os dados
     return jsonify({
         "usuario": {
             "id": usuario.id,
@@ -91,9 +88,8 @@ def login():
         }
     }), 200
 
-
-# PERFIL
-
+# ==================================================
+# PROFILE
 @auth_bp.route("/profile/<int:id>", methods=["GET"], strict_slashes=False)
 def perfil(id):
     usuario = Usuario.query.get(id)
@@ -113,9 +109,8 @@ def perfil(id):
         "verifiedStudent": True
     })
 
-
-# EDITAR PERFIL
-
+# ==================================================
+# EDIT PROFILE
 @auth_bp.route("/profile/<int:id>", methods=["PUT"], strict_slashes=False)
 def editar_perfil(id):
     usuario = Usuario.query.get(id)
@@ -143,11 +138,8 @@ def editar_perfil(id):
         "mensagem": "Perfil atualizado com sucesso."
     })
 
-
 # ==================================================
-# EXCLUIR USUÁRIO
-# ==================================================
-
+# DELETE USER
 @auth_bp.route("/profile/<int:id>", methods=["DELETE"], strict_slashes=False)
 def excluir_usuario(id):
     usuario = Usuario.query.get(id)

@@ -1,23 +1,17 @@
 from flask import Flask
 from flask_cors import CORS
 import os
-
 from app.database import db
-
 from app.routes.products import products_bp
 from app.routes.auth import auth_bp
 
 app = Flask(__name__)
 
-# Aumenta o limite de tamanho do corpo da requisição para 16MB (para aceitar fotos em Base64)
-app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
-
-# DISABLES READING OF THE FINAL BAR
-app.url_map.strict_slashes = False 
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024 #Increases the request body size limit to 16MB.
+app.url_map.strict_slashes = False # DISABLES READING OF THE FINAL BAR
 
 CORS(app)
 
-# 1. Grab the URL
 minha_url_db = os.getenv(
     "DATABASE_URL", 
     "postgresql://postgres:eudeybanana@localhost:5432/unidesapego"
@@ -31,7 +25,6 @@ if minha_url_db.startswith("postgres://"):
 app.config["SQLALCHEMY_DATABASE_URI"] = minha_url_db
 
 db.init_app(app)
-
 app.register_blueprint(products_bp, url_prefix="/api/products")
 app.register_blueprint(auth_bp, url_prefix="/api/auth")
 

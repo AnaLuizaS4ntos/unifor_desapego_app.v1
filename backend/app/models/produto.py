@@ -1,5 +1,6 @@
 from app.database import db
 
+# ==================================================
 class Produto(db.Model):
 
     __tablename__ = "produtos"

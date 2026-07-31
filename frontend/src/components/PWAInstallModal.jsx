@@ -4,8 +4,9 @@ import { Share, PlusSquare, X } from 'lucide-react';
 export const PWAInstallModal = () => {
   const [showModal, setShowModal] = useState(false);
 
+  //AINDA EM TESTES ESSE CÓDIGO// ;-; NOTHING TO SCARY
   useEffect(() => {
-    // 1. Detecta se é um iPhone, iPad ou iPod
+    //1.detecte if is a iphone, ipad or apod
     const userAgent = window.navigator.userAgent.toLowerCase();
     const isIOS = /iphone|ipad|ipod/.test(userAgent);
     
@@ -15,16 +16,16 @@ export const PWAInstallModal = () => {
    
     const hasDismissed = localStorage.getItem('pwa-dismissed');
 
-    // Se for iOS, não estiver instalado e não tiver sido fechado antes, mostra o pop-up
+    //Show de pop-up in the phone
     if (isIOS && !isStandalone && !hasDismissed) {
-      // Pequeno delay para não aparecer no exato milissegundo que a página abre
+      //delay 
       setTimeout(() => setShowModal(true), 1500);
     }
   }, []);
 
   const handleClose = () => {
     setShowModal(false);
-    // Salva no navegador que o usuário fechou, para não mostrar nas próximas visitas
+    //save the id to another visits
     localStorage.setItem('pwa-dismissed', 'true');
   };
 
@@ -42,7 +43,7 @@ export const PWAInstallModal = () => {
         </button>
 
         <div className="flex flex-col items-center text-center">
-          {/* Logo simulada */}
+          {/* Simuled logo */}
           <div className="w-16 h-16 bg-[#473469] rounded-2xl flex items-center justify-center mb-4 shadow-lg text-white font-black text-3xl">
             U
           </div>

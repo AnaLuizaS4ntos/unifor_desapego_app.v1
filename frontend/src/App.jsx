@@ -174,13 +174,13 @@ export default function App() {
     }
   };
 
-  // Function to delete an item (Delete own listing)
+  //Function to delete an item (Delete own listing)
   const handleDeleteItem = async (itemId) => {
     try {
       await axios.delete(`https://uni-desapego-d2od.onrender.com/api/products/${itemId}`);
 
       setItems(prev => prev.filter(item => item.id !== itemId));
-      showToast('Anúncio excluído com sucesso! 🗑️');
+      showToast('Anúncio excluído com sucesso! ');
       
       setQuickViewItem(null); 
 
@@ -208,7 +208,7 @@ export default function App() {
     setSortBy('recent');
   };
 
-  // Login/Logout logic
+  //Login/logout logic
   const handleLogin = (user) => {
     setCurrentUser(user);
     showToast(`Bem-vindo(a), ${user.name}! 🎓`);
@@ -414,7 +414,7 @@ export default function App() {
       <footer className="mt-16 border-t border-[#AE8FBA]/20 py-8 bg-white text-center text-xs text-[#AE8FBA]">
         <div className="max-w-7xl mx-auto px-4">
           <p className="font-bold text-[#473469] mb-1">
-            UniDesapego UNIFOR — Plataforma de Economia Circular do Campus
+            UniDesapego — Plataforma de Economia Circular do Campus
           </p>
           <p className="text-[11px] text-gray-500 mb-3">
             Desenvolvido para alunos de todo o campus

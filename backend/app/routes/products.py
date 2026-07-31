@@ -4,9 +4,8 @@ from app.models.produto import Produto
 
 products_bp = Blueprint("products", __name__)
 
-
-# LISTAR PRODUTOS
-
+# ==================================================
+# PRODUCTS LISTED
 @products_bp.route("", methods=["GET"], strict_slashes=False)
 def listar_produtos():
     produtos = Produto.query.all()
@@ -38,9 +37,8 @@ def listar_produtos():
 
     return jsonify(lista)
 
-
-# CADASTRAR PRODUTO
-
+# ==================================================
+# REGISTER PRODUCTS
 @products_bp.route("", methods=["POST"], strict_slashes=False)
 def cadastrar_produto():
     dados = request.get_json()
@@ -98,7 +96,8 @@ def cadastrar_produto():
         "id": str(novo.id)
     }), 201
 
-# EXCLUIR PRODUTO 
+# ==================================================
+# REMOVE PRODUCT
 @products_bp.route("/<int:id>", methods=["DELETE"], strict_slashes=False)
 def excluir_produto(id):
     produto = Produto.query.get(id)
