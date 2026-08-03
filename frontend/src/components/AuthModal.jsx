@@ -365,7 +365,7 @@ export const AuthModal = ({
                   <input
                     type="email"
                     required
-                    placeholder="seu.nome@unifor.br"
+                    placeholder="seu.nome@edu.unifor.br"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     className="w-full px-3 py-2 rounded-xl bg-gray-50 border border-gray-200 text-xs focus:outline-none focus:ring-2 focus:ring-[#473469]"
@@ -467,7 +467,7 @@ export const AuthModal = ({
                 type="submit"
                 className="w-full py-3 bg-[#10B981] hover:bg-[#059669] text-white font-extrabold text-xs rounded-2xl shadow-md transition transform active:scale-98"
               >
-                Criar Minha Conta no UniDesapego ✨
+                Criar Minha Conta no UniDesapego
               </button>
 
               <button

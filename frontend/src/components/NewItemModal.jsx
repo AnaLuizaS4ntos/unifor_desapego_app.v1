@@ -284,7 +284,7 @@ export const NewItemModal = ({
               type="submit"
               className="w-full py-3 px-4 bg-[#473469] hover:bg-[#352552] text-[#F2E7D2] font-extrabold text-sm rounded-2xl shadow-md transition transform active:scale-98"
             >
-              Publicar no UniDesapego ✨
+              Publicar no UniDesapego
             </button>
           </div>
 
