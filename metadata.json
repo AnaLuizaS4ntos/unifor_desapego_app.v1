@@ -1,0 +1,6 @@
+{
+  "name": "UniDesapego UNIFOR",
+  "description": "Plataforma de desapego e doações da comunidade universitária UNIFOR",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

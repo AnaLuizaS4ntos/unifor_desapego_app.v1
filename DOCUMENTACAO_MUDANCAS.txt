@@ -1,0 +1,326 @@
+=====================================================================
+ UNIDESAPEGO UNIFOR - DOCUMENTACAO DAS MUDANCAS
+ Revisao de bugs + melhoria de arquitetura + ajustes para o Render
+=====================================================================
+
+Este arquivo lista TUDO o que foi alterado, por que foi alterado e
+o que voce precisa saber/decidir. Leia na ordem: as secoes 1 e 2 sao
+as mais importantes.
+
+
+---------------------------------------------------------------------
+1. RESUMO RAPIDO
+---------------------------------------------------------------------
+- Foram corrigidos 6 bugs que afetavam o uso (secao 3) e varios
+  problemas menores (secao 4).
+- O App.tsx tinha 438 linhas com tudo misturado. Agora tem ~190 e so
+  "cola" as pecas. A logica foi para pastas separadas (secao 5).
+- Foi criada uma suite de testes (34 testes) cobrindo as regras que
+  tinham bug. Rode com:  npm test
+- Dependencias sem uso foram removidas e foi adicionado o script
+  "npm start", necessario para publicar no Render (secao 2).
+- Validacao feita: tsc (tipos) sem erros, vite build OK, 34 testes OK,
+  e "npm start" respondendo na porta definida por PORT.
+  NAO abri o app no navegador (so li o codigo e rodei testes), entao
+  vale uma olhada visual rapida (secao 8).
+
+
+---------------------------------------------------------------------
+2. SOBRE A "API" / QUEDA NO RENDER  (LEIA)
+---------------------------------------------------------------------
+O QUE EU ENCONTREI
+- Este projeto NAO tem backend/API. E so um front-end (Vite + React).
+  Nao existe nenhum fetch/axios/rota, nem arquivo server.js, e a pasta
+  nao e um repositorio git. Os dados ficam no localStorage do
+  navegador de cada visitante.
+- Por isso eu nao consigo ver o que caiu no Render: nao tenho acesso
+  ao painel nem aos logs, e se existe uma API, ela nao esta nesta pasta.
+  >>> Se a API e outro projeto, me mande o LOG de erro do Render
+  >>> (aba "Logs") e o codigo dela que eu investigo de verdade.
+
+CAUSAS PROVAVEIS QUE EU CORRIGI NESTE PROJETO
+Se voce publicou ESTE projeto como "Web Service" no Render, ele
+provavelmente falhava por um destes motivos:
+
+  a) Nao existia o script "start" no package.json.
+     Render roda "npm start" e dava "Missing script: start".
+     -> CORRIGIDO: "start": "vite preview".
+
+  b) O "vite preview" bloqueia dominios desconhecidos e responde
+     "Blocked request. This host is not allowed" no endereco
+     *.onrender.com.
+     -> CORRIGIDO em vite.config.ts: preview.allowedHosts = true.
+
+  c) O Render informa a porta pela variavel de ambiente PORT, e o
+     preview ouvia so na porta padrao.
+     -> CORRIGIDO em vite.config.ts: usa process.env.PORT e host
+        0.0.0.0.
+
+  d) Dependencias de build estavam em devDependencies. O Render usa
+     NODE_ENV=production e pode pular devDependencies, quebrando o
+     build (o "tailwindcss" estava la; o "vite" aparecia duplicado).
+     -> CORRIGIDO: tailwindcss movido para dependencies e vite
+        deixou de ser duplicado.
+
+  e) Havia pacotes de servidor sem uso (express, dotenv,
+     @google/genai, motion) deixando o build mais pesado/lento.
+     -> REMOVIDOS (nenhum era importado no codigo).
+
+COMO PUBLICAR NO RENDER (2 opcoes - a 1 e a mais indicada)
+  Opcao 1 - Static Site (recomendada, gratis e sem "queda"):
+     Build Command:      npm install && npm run build
+     Publish Directory:  dist
+  Opcao 2 - Web Service:
+     Build Command:      npm install && npm run build
+     Start Command:      npm start
+  Node: use versao 20 ou maior (package.json agora exige >=20).
+
+IMPORTANTE (limitacao real do projeto)
+  Como nao ha backend, os anuncios que alguem publica so aparecem
+  NAQUELE navegador. Outras pessoas nao veem. Para um marketplace de
+  verdade (todos vendo os mesmos anuncios) e preciso criar uma API +
+  banco de dados. Posso ajudar nisso como proximo passo - e ai sim
+  teria uma API para hospedar no Render.
+
+
+---------------------------------------------------------------------
+3. BUGS CORRIGIDOS (os 6 do relatorio anterior)
+---------------------------------------------------------------------
+[1] Contador da categoria "Doacao" aparecia dobrado
+    Antes : src/App.tsx (categoryCounts) somava a doacao duas vezes
+            (pela flag isDonation E pela categoria 'Doacao').
+    Agora : "Doacao" deixou de ser categoria. Conta so pela flag
+            isDonation. Uma doacao tambem conta na categoria real
+            dela (ex.: livro doado conta em "Livros & Apostilas").
+    Onde  : src/lib/items.ts -> countByCategory()
+
+[2] "Mais recentes" nao colocava itens novos no topo
+    Antes : ordenava por id.localeCompare (texto). Item novo ficava
+            abaixo do item-8 dos exemplos.
+    Agora : cada anuncio tem publishedAt (data em milissegundos) e a
+            ordenacao usa esse numero. Empates de preco/popularidade
+            sao desempatados pelo mais recente.
+    Onde  : src/types.ts (publishedAt), src/lib/items.ts -> sortItems()
+
+[3] WhatsApp do vendedor vinha com numero de outra pessoa
+    Antes : campo ja vinha preenchido com 5585999887766 (numero da
+            Mariana, dos exemplos). Numero sem "55" gerava link invalido.
+    Agora : campo comeca vazio, e obrigatorio e validado. "85999887766"
+            e "(85) 99988-7766" viram 5585999887766 automaticamente.
+            Seus dados (nome/curso/WhatsApp) sao lembrados para os
+            proximos anuncios.
+            Se um anuncio antigo tiver numero invalido, o botao mostra
+            um aviso em vez de abrir um link quebrado.
+    Onde  : src/lib/whatsapp.ts, src/lib/newItemForm.ts,
+            src/components/NewItemModal.tsx
+
+[4] Formulario "Desapegar": categoria "Doacao" presa e preco vazio
+    Antes : desmarcar Doacao deixava a categoria como "Doacao";
+            preco vazio virava doacao sem avisar; aceitava preco
+            negativo; URL de imagem sem validacao.
+    Agora : categoria e estado sao escolhas reais e independentes da
+            doacao. Preco e obrigatorio (> 0) se nao for doacao. URL
+            da imagem precisa ser http/https. Erros aparecem abaixo de
+            cada campo, em portugues.
+    Onde  : src/lib/newItemForm.ts, src/components/NewItemModal.tsx
+
+[5] Filtros de doacao / favoritos / categoria entravam em conflito
+    Antes : existiam DOIS estados para doacao (onlyDonations e a
+            categoria "Doacao"), dessincronizados. Ex.: desligar o
+            botao "Doacoes" nao limpava a categoria; aba "Salvos" do
+            celular mostrava so doacoes salvas.
+    Agora : um unico objeto de filtros. "Doacao" e simplesmente um
+            valor de category. Header, chips, banner e menu mobile
+            leem e escrevem o mesmo estado, entao nao ha como
+            divergir. Favoritos + doacoes podem ser combinados.
+    Onde  : src/hooks/useMarketplaceFilters.ts, src/lib/items.ts,
+            src/App.tsx
+
+[6] App podia quebrar com dados ruins no localStorage
+    Antes : JSON.parse sem validacao ("null" ou formato estranho
+            derrubava a tela); itens de exemplo ficavam "congelados" no
+            navegador; erro de cota nao era tratado.
+    Agora : toda leitura e protegida e validada (src/lib/storage.ts e
+            src/lib/itemStorage.ts). So os anuncios DO USUARIO sao
+            salvos; os de exemplo vem do codigo (se voce editar o
+            mockItems.ts, todo mundo ve a mudanca).
+            Dados antigos sao migrados automaticamente (secao 6).
+
+
+---------------------------------------------------------------------
+4. PROBLEMAS MENORES CORRIGIDOS
+---------------------------------------------------------------------
+- Hooks depois de "return null" nos 3 modais (violava as regras do
+  React). Agora o App so renderiza o modal enquanto ele esta aberto.
+- Toast: efeito colateral dentro do setState (rodava 2x no StrictMode)
+  e timer que apagava o toast novo. Agora e o hook useToast.
+- Compartilhar: copiava so a URL da pagina e quebrava em http://.
+  Agora usa o compartilhar nativo do celular ou copia
+  "titulo - preco (local) + link", com tratamento de erro.
+- Modais: agora fecham com Esc, travam o scroll da pagina, focam ao
+  abrir e tem aria-label. Clicar fora fecha, exceto no formulario
+  (para nao perder o que foi digitado).
+- Imagens: itens sem foto ou com link quebrado usam imagem padrao
+  (componente SafeImage). Antes a lista e o detalhe quebravam.
+- Avatar: o nome na URL do dicebear agora e codificado (acentos).
+- CSS: criado o breakpoint "xs" (o texto "Doacoes" do header e o
+  "WhatsApp" da lista nunca apareciam) e as animacoes fadeIn/scaleUp
+  que nao existiam.
+- Barra de categorias com altura fixa (top-[100px]) removida. Header
+  e categorias agora ficam juntos num unico bloco "sticky".
+- Chip de filtro de "estado" agora aparece nos filtros ativos.
+- Contador "Salvos" conta so favoritos que ainda existem.
+- Busca ignora acentos ("calculo" acha "Calculo") e acha "doacao".
+- Apos publicar um anuncio, os filtros sao limpos e a pagina sobe ao
+  topo (antes o anuncio novo podia ficar escondido por um filtro).
+- Codigo morto removido: imports/props nao usados, FilterState antigo
+  (maxPrice, onlyMyListings), props nao usadas do Header.
+- index.html: titulo "UniDesapego UNIFOR" e lang="pt-BR"
+  (antes: "My Google AI Studio App", lang="en").
+- Script "clean" agora funciona no Windows (usava rm -rf).
+
+
+---------------------------------------------------------------------
+5. ARQUITETURA: ANTES x DEPOIS
+---------------------------------------------------------------------
+ANTES: App.tsx com 438 linhas (estado, regras, persistencia, filtros,
+       banner, rodape...). Listas de categorias/blocos repetidas em 3
+       arquivos.
+
+DEPOIS:
+  src/
+   |- App.tsx                  composicao (liga hooks + componentes)
+   |- constants.ts             listas e chaves (UMA fonte da verdade)
+   |- types.ts                 tipos (derivados de constants.ts)
+   |- data/mockItems.ts        anuncios de exemplo
+   |- lib/                     REGRAS PURAS (sem React, testaveis)
+   |   |- items.ts             filtrar, ordenar, contar
+   |   |- newItemForm.ts       validar formulario e montar anuncio
+   |   |- whatsapp.ts          normalizar numero e montar link
+   |   |- format.ts            preco, "Ha 2 horas", avatar
+   |   |- storage.ts           localStorage seguro
+   |   |- itemStorage.ts       carregar/salvar/migrar dados
+   |   '- *.test.ts            testes
+   |- hooks/                   ESTADO (React)
+   |   |- useMarketplaceItems  anuncios (exemplo + do usuario)
+   |   |- useFavorites         favoritos
+   |   |- useMarketplaceFilters  filtros unificados
+   |   '- useToast             mensagens temporarias
+   '- components/              TELAS
+       |- ui/Modal.tsx         casca unica dos modais
+       |- ui/SafeImage.tsx     imagem com fallback
+       |- HeroBanner, ActiveFilters, ItemsView, Footer, Toast
+       '- (os que ja existiam, simplificados)
+
+Regra de ouro para mexer no futuro:
+  * Mudou uma REGRA (filtro, validacao, formato)?  -> src/lib/
+  * Mudou um DADO que a tela guarda?               -> src/hooks/
+  * Mudou o VISUAL?                                -> src/components/
+  * Nova categoria/bloco/estado?                   -> so em constants.ts
+    (selects, filtros e tipos se atualizam sozinhos).
+
+
+---------------------------------------------------------------------
+6. MUDANCAS DE COMPORTAMENTO QUE VOCE VAI NOTAR
+---------------------------------------------------------------------
+(Nao sao bugs: sao decisoes que tomei. Me avise se quiser reverter.)
+
+a) "Doacao" nao e mais categoria nem estado de conservacao. O chip
+   "Doacoes Gratis" continua existindo e funciona como filtro. As 2
+   doacoes de exemplo agora estao em "Livros & Apostilas".
+b) Ordem padrao: agora e realmente "mais recente primeiro". Os itens
+   de exemplo aparecem do mais novo (Kit Arduino, ha 2 horas) ao mais
+   antigo. Antes apareciam do item-8 ao item-1.
+c) Anuncios novos NAO ganham mais o selo verde "UNIFOR verificado"
+   (verifiedStudent: false). Qualquer pessoa digita qualquer nome, e
+   nao existe verificacao real. Os 8 exemplos continuam com o selo.
+   Para reverter: src/lib/newItemForm.ts (buildItemFromForm).
+d) Nome, curso e WhatsApp sao obrigatorios no formulario.
+e) Favoritos e doacoes agora podem ser combinados (antes um desligava
+   o outro).
+f) O horario dos exemplos ("Ha 2 horas") agora e calculado em relacao
+   a hora em que a pagina abre.
+g) Favoritos iniciais (item-1 e item-2 ja salvos para quem entra pela
+   1a vez) foram MANTIDOS como estavam. Para zerar, edite
+   DEFAULT_FAVORITE_IDS em constants.ts.
+
+MIGRACAO DE DADOS (automatica, nao precisa fazer nada)
+  Quem ja tinha anuncios salvos no navegador: na proxima abertura, o
+  app le a chave antiga "unifor_marketplace_items", descarta os
+  exemplos duplicados, converte o formato antigo (categoria/estado
+  "Doacao" -> "Outros"/"Usado - Bom Estado"; data recuperada do id)
+  e salva na chave nova "unifor_marketplace_user_items_v2".
+
+
+---------------------------------------------------------------------
+7. ARQUIVOS
+---------------------------------------------------------------------
+CRIADOS
+  src/constants.ts
+  src/lib/format.ts, items.ts, newItemForm.ts, whatsapp.ts,
+          storage.ts, itemStorage.ts
+  src/lib/items.test.ts, lib.test.ts, itemStorage.test.ts
+  src/hooks/useToast.ts, useFavorites.ts, useMarketplaceItems.ts,
+            useMarketplaceFilters.ts
+  src/components/ui/Modal.tsx, ui/SafeImage.tsx
+  src/components/HeroBanner.tsx, ActiveFilters.tsx, ItemsView.tsx,
+                 Footer.tsx, Toast.tsx
+  DOCUMENTACAO_MUDANCAS.txt (este arquivo)
+
+ALTERADOS
+  src/App.tsx (reescrito)         src/types.ts (reescrito)
+  src/data/mockItems.ts           src/index.css (+xs, +animacoes)
+  src/components/Header.tsx       CategoryBar.tsx   FilterBar.tsx
+  src/components/ItemCard.tsx     ItemListItem.tsx
+  src/components/ItemDetailModal.tsx   NewItemModal.tsx
+  src/components/PaletteShowcaseModal.tsx
+  vite.config.ts (+bloco preview) package.json   index.html
+
+NAO ALTERADOS (de proposito)
+  src/components/MobileBottomNav.tsx, src/main.tsx, tsconfig.json,
+  README.md, .env.example, metadata.json
+  (README e .env.example ainda falam de GEMINI_API_KEY, que o projeto
+  nao usa. Posso limpar se quiser.)
+
+PACOTES
+  Removidos: express, dotenv, @google/genai, motion, @types/express,
+             tsx, esbuild, vite (duplicado em devDependencies)
+  Movido para dependencies: tailwindcss
+  Adicionados (dev): vitest, @types/react, @types/react-dom
+  (os @types/react nao estavam declarados; o tsc passava por sorte)
+
+PASTAS CRIADAS PELA REVISAO
+  node_modules/ e dist/ (do npm install e do build). Ja estao no
+  .gitignore. Pode apagar a vontade (npm install recria).
+
+
+---------------------------------------------------------------------
+8. COMO RODAR / TESTAR
+---------------------------------------------------------------------
+  npm install        instala dependencias
+  npm run dev        desenvolvimento (porta 3000)
+  npm test           34 testes das regras
+  npm run lint       checagem de tipos (tsc)
+  npm run build      gera a pasta dist
+  npm start          serve o build (usa a porta PORT, como no Render)
+
+CHECKLIST VISUAL (5 minutos no navegador, pois eu nao abri o app):
+  [x] Clicar em "Doacoes" no header, depois desligar: volta tudo?
+  [x] Celular: Doacoes -> Salvos mostra seus salvos (nao so doacoes)?
+  [x] Publicar um item pago e outro como doacao: aparecem no topo?
+  [ ] Tentar publicar sem preco / sem WhatsApp: mostra os erros?
+  [ ] Abrir um item, apertar Esc e clicar fora: fecha? (NÃO)
+  [ ] Rolar a pagina: header + categorias ficam fixos sem sobrepor?  (não)
+
+
+---------------------------------------------------------------------
+9. PROXIMOS PASSOS SUGERIDOS (nao feitos)
+---------------------------------------------------------------------
+1. Me enviar o log do Render / codigo da API se ela for outro projeto.
+2. Criar um backend (API + banco) para os anuncios serem
+   compartilhados entre usuarios. Hoje cada navegador ve so os seus.
+3. Login real (ex.: e-mail institucional) para o selo "verificado"
+   ter significado.
+4. Contador de visualizacoes/favoritos reais (hoje sao numeros fixos).
+5. Limpar README.md e .env.example (referencias ao Gemini).
+

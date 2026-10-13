@@ -1,0 +1,150 @@
+===============================================================================
+  UNIDESAPEGO UNIFOR — ARQUITETURA BACKEND, POSTGRESQL & DEPLOY RENDER / VERCEL
+===============================================================================
+
+Este guia detalha a arquitetura completa do Backend, Banco de Dados PostgreSQL,
+Login Real com E-mail UNIFOR, Contador Real de Visualizações e o passo a passo
+exato para colocar tudo rodando no Render (ID: srv-d9la4a710e5c73da3eb0) e Vercel.
+
+-------------------------------------------------------------------------------
+1. O QUE FOI IMPLEMENTADO NA ARQUITETURA
+-------------------------------------------------------------------------------
+
+1.1 BACKEND COMPLETO (Node.js + Express + TypeScript):
+    - Pasta criada: server/
+    - Conexão com PostgreSQL via Pool ('pg') com auto-reconexão e suporte SSL.
+    - Criação automática das tabelas (Auto-Migrations) ao iniciar o servidor:
+        * 'users': id, nome, e-mail, senha criptografada (bcrypt), curso, whatsapp, selo de verificação UNIFOR.
+        * 'items': id, título, descrição, preço, categoria, estado, bloco, fotos, vendedor, visualizações, data.
+        * 'favorites': relação de favoritos entre usuários e anúncios.
+    - Auto-seeding: Se o banco estiver vazio, ele já insere automaticamente os 8
+      anúncios iniciais do campus UNIFOR para a plataforma nunca abrir em branco.
+    - Endpoint de Health Check: GET /api/health (usado pelo Render para monitorar a saúde do serviço).
+
+1.2 AUTENTICAÇÃO REAL E SEGURA:
+    - Registro e Login com JSON Web Token (JWT) e hash de senhas (bcrypt com salt).
+    - Selo de Aluno Verificado Automático:
+        * E-mails terminados em '@unifor.br' ou '@edu.unifor.br' recebem verified_student = true.
+    - Endpoints:
+        * POST /api/auth/register (cria usuário, gera token JWT)
+        * POST /api/auth/login (autentica credenciais, devolve token e dados)
+        * GET  /api/auth/me (devolve o perfil do estudante autenticado via Bearer Token)
+
+1.3 CONTADOR DE VISUALIZAÇÕES REAL:
+    - Endpoint: POST /api/items/:id/view
+    - Executa incremento atômico no PostgreSQL:
+        UPDATE items SET views = views + 1 WHERE id = $1 RETURNING views;
+    - Toda vez que alguém clica em "Ver Detalhes" de um anúncio, o contador
+      aumenta de verdade no banco de dados e atualiza na tela de todos.
+
+1.4 FAVORITOS SINCRONIZADOS NO BANCO:
+    - Endpoint: POST /api/items/:id/favorite
+    - Se o usuário estiver logado, seus favoritos ficam salvos no PostgreSQL,
+      sendo restaurados em qualquer dispositivo ou computador que ele logar.
+
+1.5 CLIENTE FRONT-END INTELIGENTE (src/services/api.ts):
+    - Conecta-se à API definida pela variável VITE_API_URL.
+    - Modo Resiliente / Fallback: Se o backend no Render estiver "acordando" do
+      modo de suspensão (spin down da camada grátis), o front-end não trava e usa
+      graciosamente os dados locais até a API responder.
+
+
+-------------------------------------------------------------------------------
+2. CONFIGURAÇÃO DO SERVIÇO NO RENDER (ID: srv-d9la4a710e5c73da3eb0)
+-------------------------------------------------------------------------------
+
+No painel do Render (dashboard.render.com), abra o serviço 'srv-d9la4a710e5c73da3eb0':
+
+2.1 Em "Settings":
+    - Environment: Node
+    - Build Command:
+        npm install
+    - Start Command:
+        npm run server:start
+
+2.2 Em "Environment" (Variáveis de Ambiente):
+    Adicione as seguintes variáveis:
+    
+    1. DATABASE_URL
+       Valor: A URL de conexão do seu PostgreSQL.
+       (Se estiver usando o Render Postgres: copie a "Internal Database URL" do banco).
+       Exemplo: postgresql://usuario:senha@dpg-xxxxx.render.com/unidesapego
+       
+    2. JWT_SECRET
+       Valor: uma chave segura aleatória (ex: unidesapego_unifor_jwt_secret_key_2026)
+
+    3. NODE_ENV
+       Valor: production
+
+    * Nota: Não precisa configurar a variável PORT no Render, pois o Render já
+      injeta a porta correta automaticamente e o server/index.ts já a utiliza!
+
+
+-------------------------------------------------------------------------------
+3. CONFIGURAÇÃO DO BANCO POSTGRESQL
+-------------------------------------------------------------------------------
+
+3.1 NO SEU NOTEBOOK (Para desenvolvimento local):
+    O serviço 'postgresql-x64-18' já está ativo no seu Windows.
+    Para conectar o servidor localmente ao seu banco do notebook:
+    Crie um arquivo '.env' na raiz do projeto com:
+    
+    DATABASE_URL="postgresql://postgres:SUA_SENHA@localhost:5432/unidesapego"
+    PORT=5000
+    JWT_SECRET="unidesapego_local_secret"
+    
+    * Para criar o banco 'unidesapego' local, basta rodar no terminal do PostgreSQL (psql ou pgAdmin):
+      CREATE DATABASE unidesapego;
+
+3.2 PARA O RENDER (Produção online):
+    O Render não consegue se conectar ao 'localhost' do seu notebook físico.
+    Para que a API fique 100% online na nuvem, você tem duas opções muito fáceis e gratuitas:
+    
+    Opção A (Mais fácil - tudo no Render):
+      1. No dashboard do Render, clique em "New +" -> "PostgreSQL".
+      2. Nome: 'unidesapego-db'.
+      3. Após criar, copie a "Internal Database URL".
+      4. Cole essa URL na variável 'DATABASE_URL' do seu serviço 'srv-d9la4a710e5c73da3eb0'.
+      
+    Opção B (Neon.tech ou Supabase):
+      1. Crie uma conta no neon.tech ou supabase.com (ambos são PostgreSQL grátis).
+      2. Copie a Connection String e cole na 'DATABASE_URL' do Render.
+
+
+-------------------------------------------------------------------------------
+4. CONFIGURAÇÃO DO FRONT-END NA VERCEL
+-------------------------------------------------------------------------------
+
+Como seu Front-end está hospedado na Vercel:
+
+1. Acesse o painel do seu projeto na Vercel (vercel.com).
+2. Vá em "Settings" -> "Environment Variables".
+3. Adicione a variável:
+     Name:  VITE_API_URL
+     Value: https://seu-servico-no-render.onrender.com
+     (Substitua pela URL pública do seu serviço no Render).
+4. Faça um "Redeploy" na Vercel.
+
+Agora seu front-end na Vercel fará chamadas diretamente para o seu backend no Render!
+
+
+-------------------------------------------------------------------------------
+5. COMANDOS ÚTEIS PARA O DIA A DIA
+-------------------------------------------------------------------------------
+
+1. Rodar o backend localmente:
+   npm run server:dev
+
+2. Rodar o front-end localmente:
+   npm run dev
+
+3. Rodar a checagem de tipos (TypeScript):
+   npm run lint
+
+4. Rodar todos os testes unitários:
+   npm test
+
+5. Gerar a build de produção do front-end:
+   npm run build
+===============================================================================
+

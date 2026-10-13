@@ -1,0 +1,76 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --color-cream: #F2E7D2;
+    --color-pink: #F79EB1;
+    --color-lilac: #AE8FBA;
+    --color-slate-blue: #4C5E91;
+    --color-deep-purple: #473469;
+    --color-emerald-green: #10B981;
+  }
+
+  body {
+    background-color: #F8F7FA;
+    color: #2D233F;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  }
+}
+
+/* Custom scrollbar for horizontal category filter list */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Card hover soft shadow */
+.card-hover-effect {
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.card-hover-effect:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 24px -6px rgba(71, 52, 105, 0.12);
+}
+
+.bg-palette-cream { background-color: #F2E7D2; }
+.bg-palette-pink { background-color: #F79EB1; }
+.bg-palette-lilac { background-color: #AE8FBA; }
+.bg-palette-slate { background-color: #4C5E91; }
+.bg-palette-deep { background-color: #473469; }
+
+.text-palette-deep { color: #473469; }
+.text-palette-slate { color: #4C5E91; }
+.text-palette-lilac { color: #8F699E; }
+.text-palette-pink { color: #E25B78; }
+.border-palette-lilac { border-color: #AE8FBA; }
+.border-palette-deep { border-color: #473469; }
+
+/* Breakpoint "xs" usado em classes como `hidden xs:inline` (o Tailwind v4 não tem xs por padrão) */
+@theme {
+  --breakpoint-xs: 30rem;
+}
+
+/* Animações usadas pelos modais (animate-fadeIn / animate-scaleUp não existiam) */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes scaleUp {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1); }
+}
+.animate-fadeIn {
+  animation: fadeIn 0.2s ease-out;
+}
+.animate-scaleUp {
+  animation: scaleUp 0.2s ease-out;
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-fadeIn,
+  .animate-scaleUp {
+    animation: none;
+  }
+}
