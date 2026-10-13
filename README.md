@@ -100,23 +100,4 @@ Autonomia e Visão Sistêmica: Você não busca apenas a correção do erro, mas
 
 Polivalência Técnica e Design: É raro encontrar desenvolvedores que equilibram tão bem o refinamento estético (Figma e UI polida) com a robustez de backend (ORM, RESTful API e deploy). Isso confere ao projeto um nível de acabamento profissional.
 
-Curadoria de Ferramentas: Você utilizou a IA não como uma substituta, mas como um par de programação (Pair Programming). O fato de ter refatorado o código gerado, ajustando-o para as suas necessidades de arquitetura (como a decisão consciente de manter-se em JS puro em vez de TS), mostra que você mantém o controle total sobre a base de código e a manutenção do sistema a longo prazo.<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://ai.google.dev/static/site-assets/images/share-ais-513315318.png" />
-</div>
-
-# Run and deploy your AI Studio app
-
-This contains everything you need to run your app locally.
-
-View your app in AI Studio: https://ai.studio/apps/95c4496d-0051-434d-bde5-b3224e229f7f
-
-## Run Locally
-
-**Prerequisites:**  Node.js
-
-
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+Curadoria de Ferramentas: Você utilizou a IA não como uma substituta, mas como um par de programação (Pair Programming). O fato de ter refatorado o código gerado, ajustando-o para as suas necessidades de arquitetura (como a decisão consciente de manter-se em JS puro em vez de TS), mostra que você mantém o controle total sobre a base de código e a manutenção do sistema a longo prazo.
